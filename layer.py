@@ -9,15 +9,12 @@ from pycuda.compiler import SourceModule
 block_size = 64
 
 
-def get_kernels(cu_file):
+def get_kernel(cu_file, func):
     with open('cuda/' + cu_file) as f:
         source = f.read()
     source = source.replace('BLOCK_SIZE', str(block_size))
     mod = SourceModule(source)
-    calc_neurons = mod.get_function("calcNeurons")
-    calc_synapses = mod.get_function("calcSynapses")
-    learn_synapses_post = mod.get_function("learnSynapsesPost")
-    return calc_neurons, calc_synapses, learn_synapses_post
+    return mod.get_function(func)
 
 
 class LayerBase:
@@ -40,11 +37,7 @@ class LayerBase:
 class LayerInput(LayerBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        with open('cuda/layer_input.cu') as f:
-            source = f.read()
-        source = source.replace('BLOCK_SIZE', str(block_size))
-        mod = SourceModule(source)
-        self.calc_neurons = mod.get_function("calcNeurons")
+        self.calc_neurons = get_kernel('layer_input.cu', 'calcNeurons')
 
         self.spike_time = gpuarray.empty(shape=(self.layer_size,), dtype=np.float32) # no need to reset
 
@@ -84,7 +77,11 @@ class LayerConv(LayerNonInput):
         super().__init__(layer_pre, win_width, win_height, stride, map_num, threshold)
         self.a_plus = np.float32(a_plus)
         self.a_minus = np.float32(a_minus)
-        self.calc_neurons, self.calc_synapses, self.learn_synapses_post = get_kernels('layer_conv.cu')
+
+        cu_file = 'layer_conv.cu'
+        self.calc_neurons = get_kernel(cu_file, 'calcNeurons')
+        self.calc_synapses = get_kernel(cu_file, 'calcSynapses')
+        self.learn_synapses_post = get_kernel(cu_file, 'learnSynapsesPost')
 
         self.plastic = gpuarray.zeros(shape=(1,), dtype=np.bool)
         self.weights = gpuarray.to_gpu(np.random.normal(0.8, 0.01, (self.map_num * self.win_size * self.layer_pre.map_num,)).astype(np.float32))

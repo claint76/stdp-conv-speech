@@ -26,6 +26,7 @@ class Network:
                     layer_param['threshold'],
                     layer_param['a_plus'],
                     layer_param['a_minus'],
+                    layer_param['learning_rounds'],
                 ))
 
     def reset(self):

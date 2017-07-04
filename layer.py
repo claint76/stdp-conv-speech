@@ -75,10 +75,11 @@ class LayerNonInput(LayerBase):
 
 
 class LayerConv(LayerNonInput):
-    def __init__(self, layer_pre, win_width, win_height, stride, map_num, threshold, a_plus, a_minus):
+    def __init__(self, layer_pre, win_width, win_height, stride, map_num, threshold, a_plus, a_minus, learning_rounds):
         super().__init__(layer_pre, win_width, win_height, stride, map_num, threshold)
         self.a_plus = np.float32(a_plus)
         self.a_minus = np.float32(a_minus)
+        self.learning_rounds = learning_rounds
 
         cu_file = 'layer_conv.cu'
         self.calc_neurons = get_kernel(cu_file, 'calcNeurons')

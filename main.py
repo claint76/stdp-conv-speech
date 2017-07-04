@@ -20,6 +20,8 @@ network = Network(params)
 
 def print_progress(progress):
     print("\r[{:50}] {:5.2f}%".format('#' * int(progress * 50), progress * 100), end="", flush=True)
+    if progress == 1:
+        print()
 
 
 for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on test_set
@@ -40,7 +42,7 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
                 network.inhibit()
             if output is not None:
                 network.layers[-1].V.get(output[i])
-            print_progress(i / data_set[1].size)
+            print_progress((i + 1) / data_set[1].size)
 
     if (phase == 0):
         for l, layer in enumerate(network.layers):

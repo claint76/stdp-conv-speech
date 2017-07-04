@@ -75,5 +75,5 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
                 with open('weights_layer_{}.pickle'.format(l), 'wb') as f:
                     pickle.dump(layer.weights.get(), f)
     else:
-        ouput = np.empty((data_set[1].size, network.layers[-1].layer_size), dtype=np.float31)
+        ouput = np.empty((data_set[1].size, network.layers[-1].layer_size), dtype=np.float32)
         run(output)

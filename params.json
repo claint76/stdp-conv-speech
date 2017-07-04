@@ -2,14 +2,12 @@
     "layers": [
         {
             "type": "input",
-            "name": "Input",
             "width": 28,
             "height": 28,
             "map_num": 2
         },
         {
             "type": "conv",
-            "name": "Conv1",
             "map_num": 30,
             "win_width": 5,
             "win_height": 5,

@@ -54,7 +54,7 @@ __global__ void calcNeurons(
 __global__ void calcSynapses(
         float t, unsigned layer_size_post,
         unsigned *spike_count_pre, unsigned *spikes_pre, float *in_syn_post,
-        int *g)
+        bool *g)
 {
     unsigned id_post = BLOCK_SIZE * blockIdx.x + threadIdx.x;
 

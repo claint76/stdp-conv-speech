@@ -30,7 +30,7 @@ for phase in range(1): # 0: train on train_set, 1: test on train_set, 2: test on
     print("Simulating...")
     # for i in range(data_set[1].size):
     for i in range(1000):
-        print('i = ', i)
+        print('i =', i)
         network.reset()
 
         network.layers[0].spike_time.set(1 - data_set[0][i])

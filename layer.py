@@ -54,10 +54,10 @@ class LayerInput(LayerBase):
 class LayerNonInput(LayerBase):
     def __init__(self, layer_pre, win_width, win_height, stride, map_num, threshold):
         self.layer_pre = layer_pre
-        self.win_width = win_width
-        self.win_height = win_height
-        self.win_size = win_width * win_height
-        self.stride = stride
+        self.win_width = np.uint32(win_width)
+        self.win_height = np.uint32(win_height)
+        self.win_size = np.uint32(win_width * win_height)
+        self.stride = np.uint32(stride)
         self.threshold = np.uint32(threshold)
 
         width = (layer_pre.width - win_width) // stride + 1

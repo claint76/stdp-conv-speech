@@ -222,6 +222,15 @@ class LayerPool(LayerNonInput):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        cu_file = 'layer_pool.cu'
+        self.calc_neurons = get_kernel(cu_file, 'calcNeurons')
+        self.calc_synapses = get_kernel(cu_file, 'calcSynapses')
+
+        self.g = gpuarray.empty(shape=(self.layer_size * self.layer_pre.layer_size,), dtype=np.bool)
+
+        self.generate_connections()
+        self.reset()
+
     def generate_connections(self):
         g_host = self.g.get()
         g_host.fill(0)
@@ -244,3 +253,19 @@ class LayerPool(LayerNonInput):
                     gid = nid_pre * self.layer_size + map_post * self.map_size + ipost # index of current synapse
                     g_host[gid] = 1
         self.g.set(g_host)
+
+    def step(self, t):
+        grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
+        self.calc_synapses(
+                t, self.layer_size,
+                self.layer_pre.spike_count, self.layer_pre.spikes, self.in_syn,
+                self.g,
+                block=(block_size,1,1), grid=(grid_size,1))
+
+        self.spike_count.fill(0)
+        self.calc_neurons(
+                t, self.layer_size,
+                self.spike_count, self.spikes, self.in_syn,
+                self.V, self.fired,
+                self.threshold,
+                block=(block_size,1,1), grid=(grid_size,1))

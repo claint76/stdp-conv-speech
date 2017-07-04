@@ -38,7 +38,7 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
             for j in range(10):
                 network.step()
                 network.inhibit()
-            if output:
+            if output is not None:
                 network.layers[-1].V.get(output[i])
             print_progress(i / data_set[1].size)
 
@@ -49,7 +49,7 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
                 for r in range(layer.learning_rounds):
                     run()
                 layer.plastic.fill(False)
-                with open('weights_layer_{}.pickle'.format(l), 'wb') as f:
+                with open('output/weights_layer_{}.pickle'.format(l), 'wb') as f:
                     pickle.dump(layer.weights.get(), f)
     else:
         output = np.empty((data_set[1].size, network.layers[-1].layer_size), dtype=np.float32)

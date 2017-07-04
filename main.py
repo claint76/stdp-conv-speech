@@ -58,6 +58,8 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
     else:
         output = np.empty((data_set[1].size, network.layers[-1].layer_size), dtype=np.float32)
         run(output)
+        with open('output/output.pickle', 'wb') as f:
+            pickle.dump(output, f)
 
 print("Elapsed Time: {} seconds".format(time.time() - start_time))
 cuda.stop_profiler()

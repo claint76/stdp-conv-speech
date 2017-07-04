@@ -16,6 +16,9 @@ with open('params.json') as f:
     params = json.load(f)
 network = Network(params)
 
+def print_progress(progress):
+    print("\r[{:50}] {:5.2f}%".format('#' * int(progress * 50), progress * 100), end="", flush=True)
+
 
 for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on test_set
     print("Phase {}:".format(phase))
@@ -35,6 +38,7 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
                 network.inhibit()
             if output:
                 network.layers[-1].V.get(output[i])
+            print_progress(i / data_set[1].size)
 
     if (phase == 0):
         for l, layer in enumerate(network.layers):

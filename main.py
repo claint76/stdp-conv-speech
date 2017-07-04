@@ -72,7 +72,7 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
                 for r in range(layer.learning_rounds):
                     run()
                 layer.plastic.fill(False)
-                with open('layer_{}.pickle'.format(l), 'wb') as f:
+                with open('weights_layer_{}.pickle'.format(l), 'wb') as f:
                     pickle.dump(layer.weights.get(), f)
     else:
         ouput = np.empty((data_set[1].size, network.layers[-1].layer_size), dtype=np.float31)

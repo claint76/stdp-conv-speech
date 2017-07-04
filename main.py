@@ -37,5 +37,4 @@ for phase in range(1): # 0: train on train_set, 1: test on train_set, 2: test on
 
         for j in range(10):
             network.step()
-            #inhibition
-
+            network.inhibit()

@@ -41,3 +41,7 @@ class Network:
             layer.step(t)
         self.it += 1
 
+    def inhibit(self):
+        for layer in self.layers:
+            if hasattr(layer, 'inhibit'):
+                layer.inhibit()

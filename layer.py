@@ -83,6 +83,13 @@ class LayerConv(LayerNonInput):
         self.calc_synapses = get_kernel(cu_file, 'calcSynapses')
         self.learn_synapses_post = get_kernel(cu_file, 'learnSynapsesPost')
 
+        cu_file = 'inhibition.cu'
+        self.get_intermap_firing_winners = get_kernel(cu_file, 'get_intermap_firing_winners')
+        self.clean_spikes = get_kernel(cu_file, 'clean_spikes')
+        self.disallow_nearby_stdp = get_kernel(cu_file, 'disallow_nearby_stdp')
+        self.get_intramap_stdp_winners = get_kernel(cu_file, 'get_intramap_stdp_winners')
+        self.get_intermap_stdp_winners = get_kernel(cu_file, 'get_intermap_stdp_winners')
+
         self.plastic = gpuarray.zeros(shape=(1,), dtype=np.bool)
         self.weights = gpuarray.to_gpu(np.random.normal(0.8, 0.01, (self.map_num * self.win_size * self.layer_pre.map_num,)).astype(np.float32))
         self.g = gpuarray.empty(shape=(self.layer_size * self.layer_pre.layer_size,), dtype=np.int32)
@@ -162,8 +169,47 @@ class LayerConv(LayerNonInput):
                 block=(block_size,1,1), grid=(grid_size,1))
 
 
-    def inhibition(self):
-        pass
+    def inhibit(self):
+        # neuron inhibition
+        grid_size = int((self.spike_count.get()[0] + block_size - 1) // block_size)
+        if grid_size == 0:
+            return
+        self.get_intermap_firing_winners(
+                self.spikes, self.spike_count, self.V,
+                self.winners_intermap, self.winnersV_intermap, self.mutex,
+                self.map_size,
+                block=(block_size,1,1), grid=(grid_size,1))
+
+        self.spike_count_temp.fill(0)
+        self.clean_spikes(
+                self.spikes, self.spike_count, self.V, self.fired,
+                self.winners_intermap, self.allow_fire_loc, self.mutex, self.spikes_temp, self.spike_count_temp,
+                self.map_size,
+                block=(block_size,1,1), grid=(grid_size,1))
+        cuda.memcpy_dtod(self.spikes.gpudata, self.spikes_temp.gpudata, self.spikes_temp.nbytes)
+        cuda.memcpy_dtod(self.spike_count.gpudata, self.spike_count_temp.gpudata, self.spike_count_temp.nbytes)
+
+        # stdp inhibition
+        grid_size = int((self.map_num + block_size - 1) // block_size)
+        self.disallow_nearby_stdp(
+                self.winners_intramap, self.allow_stdp_map, self.allow_stdp_loc,
+                self.map_num, self.map_size, self.width, self.height, self.win_width//2, # must be called before winners(V)_intramap are reset
+                block=(block_size,1,1), grid=(grid_size,1))
+
+        self.winners_intramap.fill(-1)
+        self.winnersV_intramap.fill(0)
+
+        grid_size = int((self.spike_count.get()[0] + block_size - 1) // block_size)
+        self.get_intramap_stdp_winners(
+                self.spikes, self.spike_count, self.V,
+                self.winners_intramap, self.winnersV_intramap, self.allow_stdp_map, self.allow_stdp_loc, self.mutex,
+                self.map_size,
+                block=(block_size,1,1), grid=(grid_size,1))
+        grid_size = int((self.map_num + block_size - 1) // block_size)
+        self.get_intermap_stdp_winners(
+                self.winners_intramap, self.winnersV_intramap,
+                self.map_num, self.map_size, self.width, self.win_width//2,
+                block=(block_size,1,1), grid=(grid_size,1))
 
 
 class LayerPool(LayerNonInput):

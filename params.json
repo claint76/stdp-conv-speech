@@ -5,7 +5,7 @@
             "name": "Input",
             "width": 28,
             "height": 28,
-            "map_num": 1
+            "map_num": 2
         },
         {
             "type": "conv",

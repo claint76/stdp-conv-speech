@@ -164,8 +164,8 @@ class LayerConv(LayerNonInput):
                 self.g, self.weights, self.winners_intramap, self.plastic,
                 self.a_plus, self.a_minus, self.map_size,
                 block=(block_size,1,1), grid=(grid_size,1))
-        self.spike_count.fill(0)
 
+        self.spike_count.fill(0)
         grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
         self.calc_neurons(
                 t, self.layer_size,

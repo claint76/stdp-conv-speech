@@ -28,8 +28,6 @@ class Network:
                     layer_param['a_minus'],
                 ))
 
-        self.reset()
-
     def reset(self):
         for layer in self.layers:
             layer.reset()

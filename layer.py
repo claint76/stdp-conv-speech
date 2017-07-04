@@ -41,6 +41,8 @@ class LayerInput(LayerBase):
 
         self.spike_time = gpuarray.empty(shape=(self.layer_size,), dtype=np.float32) # no need to reset
 
+        self.reset()
+
     def step(self, t):
         grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
         self.spike_count.fill(0)
@@ -106,6 +108,7 @@ class LayerConv(LayerNonInput):
         self.allow_stdp_loc = gpuarray.empty(shape=(self.map_size,), dtype=np.bool) # inhibit STDP on other maps in the following timesteps
 
         self.generate_connections() 
+        self.reset()
 
     def reset(self):
         super().reset()

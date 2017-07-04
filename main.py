@@ -49,7 +49,6 @@ network = Network(params)
 for phase in range(1): # 0: train on train_set, 1: test on train_set, 2: test on test_set
     print("Phase {}:".format(phase))
 
-    print("Reading MNIST DoG version...")
     if (phase == 2):
         data_set = test_set
     else:

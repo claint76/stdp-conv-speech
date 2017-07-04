@@ -36,8 +36,6 @@ class Network:
                     layer_param['win_width'],
                     layer_param['win_height'],
                     layer_param['stride'],
-                    self.layers[-1].map_num,
-                    0, # zero threshold for pooling neuron
                 ))
             elif layer_param['type'] == 'globalpool':
                 self.layers.append(LayerPool(
@@ -45,8 +43,6 @@ class Network:
                     self.layers[-1].width,
                     self.layers[-1].height,
                     1, # stride not used
-                    self.layers[-1].map_num,
-                    0,
                 ))
 
     def reset(self):

@@ -219,8 +219,8 @@ class LayerConv(LayerNonInput):
 
 
 class LayerPool(LayerNonInput):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, layer_pre, win_width, win_height, stride):
+        super().__init__(layer_pre, win_width, win_height, stride, map_num=layer_pre.map_num, threshold=0)
 
         cu_file = 'layer_pool.cu'
         self.calc_neurons = get_kernel(cu_file, 'calcNeurons')

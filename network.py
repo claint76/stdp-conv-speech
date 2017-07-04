@@ -30,6 +30,15 @@ class Network:
                     layer_param['a_minus'],
                     layer_param['learning_rounds'],
                 ))
+            elif layer_param['type'] == 'pool':
+                self.layers.append(LayerPool(
+                    self.layers[-1],
+                    layer_param['win_width'],
+                    layer_param['win_height'],
+                    layer_param['stride'],
+                    layer_param['map_num'],
+                    layer_param['threshold'],
+                ))
 
     def reset(self):
         for layer in self.layers:

@@ -221,3 +221,26 @@ class LayerConv(LayerNonInput):
 class LayerPool(LayerNonInput):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+    def generate_connections(self):
+        g_host = self.g.get()
+        g_host.fill(0)
+        for ipost in range(self.map_size):
+            rpost = ipost // self.width
+            cpost = ipost % self.width
+
+            # start point of input window of current post-neuron
+            rpre_base = rpost * self.stride
+            cpre_base = cpost * self.stride
+
+            for i in range(self.win_size):
+                rpre = rpre_base + i // self.win_width
+                cpre = cpre_base + i % self.win_width
+                ipre = rpre * self.layer_pre.width + cpre
+
+                for map_post in range(self.map_num):
+                    map_pre = map_post
+                    nid_pre = map_pre * self.layer_pre.map_size + ipre
+                    gid = nid_pre * self.layer_size + map_post * self.map_size + ipost # index of current synapse
+                    g_host[gid] = 1
+        self.g.set(g_host)

@@ -18,18 +18,22 @@ __global__ void calcNeurons(
         }
         __syncthreads();
 
+        V[id] += in_syn[id];
+        in_syn[id] = 0;
+        bool fire = false;
+
         ////////////////////////////////////////////////////////////
         // begin
         ////////////////////////////////////////////////////////////
-        V[id] += in_syn[id];
-        in_syn[id] = 0;
-
         if (V[id] >= threshold && allow_fire_loc[id % map_size]) {
-            spikes_block[atomicAdd((unsigned *)&spike_count_block, 1)] = id;
+            fire = true;
         }
         ////////////////////////////////////////////////////////////
         // end
         ////////////////////////////////////////////////////////////
+
+        if (fire)
+            spikes_block[atomicAdd((unsigned *)&spike_count_block, 1)] = id;
 
         __syncthreads();
         if (threadIdx.x == 0) {

@@ -3,6 +3,7 @@
 import json
 import numpy as np
 import pickle
+import time
 
 import pycuda.driver as cuda
 import pycuda.autoinit
@@ -24,6 +25,7 @@ def print_progress(progress):
         print()
 
 
+start_time = time.time()
 for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on test_set
     print("Phase {}:".format(phase))
 
@@ -57,4 +59,5 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
         output = np.empty((data_set[1].size, network.layers[-1].layer_size), dtype=np.float32)
         run(output)
 
+print("Elapsed Time: {} seconds".format(time.time() - start_time))
 cuda.stop_profiler()

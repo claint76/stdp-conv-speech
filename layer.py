@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import numpy as np
+import pickle
+import os.path
 
 import pycuda.driver as cuda
 import pycuda.gpuarray as gpuarray
@@ -121,6 +123,13 @@ class LayerConv(LayerNonInput):
         self.allow_stdp_loc.fill(True)
 
     def generate_connections(self):
+        g_file = '/tmp/g_{}_{}_{}_{}_{}_{}.pickle'.format(self.layer_pre.width, self.layer_pre.height, self.layer_pre.map_num, self.win_width, self.win_height, self.stride)
+        if os.path.isfile(g_file):
+            with open(g_file, 'rb') as f:
+                g_host = pickle.load(f)
+                self.g.set(g_host)
+                return
+
         g_host = self.g.get()
         g_host.fill(-1)
         for ipost in range(self.map_size):
@@ -143,6 +152,8 @@ class LayerConv(LayerNonInput):
                         g_host[gid] = map_post * self.layer_pre.map_num * self.win_size + map_pre * self.win_size + i
         self.g.set(g_host)
 
+        with open(g_file, 'wb') as f:
+            pickle.dump(g_host, f)
 
     def step(self, t):
         grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
@@ -225,6 +236,13 @@ class LayerPool(LayerNonInput):
         self.reset()
 
     def generate_connections(self):
+        g_file = '/tmp/g_{}_{}_{}_{}_{}_{}.pickle'.format(self.layer_pre.width, self.layer_pre.height, self.layer_pre.map_num, self.win_width, self.win_height, self.stride)
+        if os.path.isfile(g_file):
+            with open(g_file, 'rb') as f:
+                g_host = pickle.load(f)
+                self.g.set(g_host)
+                return
+
         g_host = self.g.get()
         g_host.fill(0)
         for ipost in range(self.map_size):
@@ -246,6 +264,9 @@ class LayerPool(LayerNonInput):
                     gid = nid_pre * self.layer_size + map_post * self.map_size + ipost # index of current synapse
                     g_host[gid] = 1
         self.g.set(g_host)
+
+        with open(g_file, 'wb') as f:
+            pickle.dump(g_host, f)
 
     def step(self, t):
         grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int

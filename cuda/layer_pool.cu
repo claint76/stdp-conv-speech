@@ -25,7 +25,7 @@ __global__ void calcNeurons(
         ////////////////////////////////////////////////////////////
         // begin
         ////////////////////////////////////////////////////////////
-        if (V[id] >= threshold && !fired[id]) {
+        if (V[id] > threshold && !fired[id]) {
             fired[id] = true;
             fire = true;
         }

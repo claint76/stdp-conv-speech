@@ -16,7 +16,7 @@ from network import Network
 train_set, test_set = read_mnist()
 
 print('Creating network...')
-with open('params.json') as f:    
+with open('params.json') as f:
     params = json.load(f)
 network = Network(params)
 

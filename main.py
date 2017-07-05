@@ -15,26 +15,27 @@ from network import Network
 
 train_set, test_set = read_mnist()
 
+print('Creating network...')
 with open('params.json') as f:    
     params = json.load(f)
 network = Network(params)
 
 def print_progress(progress):
-    print("\r[{:50}] {:5.2f}%".format('#' * int(progress * 50), progress * 100), end="", flush=True)
+    print('\r[{:50}] {:5.2f}%'.format('#' * int(progress * 50), progress * 100), end='', flush=True)
     if progress == 1:
         print()
 
 
 start_time = time.time()
 for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on test_set
-    print("Phase {}:".format(phase))
+    print('Phase {}:'.format(phase))
 
     if (phase == 2):
         data_set = test_set
     else:
         data_set = train_set
 
-    print("Simulating...")
+    print('Simulating...')
     def run(output=None):
         for i in range(data_set[1].size):
             network.reset()
@@ -62,5 +63,5 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
         with open('output/output.pickle', 'wb') as f:
             pickle.dump(output, f)
 
-print("Elapsed Time: {} seconds".format(time.time() - start_time))
+print('Elapsed Time: {} seconds'.format(time.time() - start_time))
 cuda.stop_profiler()

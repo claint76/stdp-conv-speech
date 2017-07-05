@@ -37,9 +37,10 @@ class LayerBase:
 
 
 class LayerInput(LayerBase):
+    (calc_neurons,) = get_kernels('layer_input.cu', ['calcNeurons'])
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        (self.calc_neurons,) = get_kernels('layer_input.cu', ['calcNeurons'])
 
         self.spike_time = gpuarray.empty(shape=(self.layer_size,), dtype=np.float32) # no need to reset
 
@@ -77,17 +78,17 @@ class LayerNonInput(LayerBase):
 
 
 class LayerConv(LayerNonInput):
+    calc_neurons, calc_synapses, learn_synapses_post = \
+            get_kernels('layer_conv.cu', ['calcNeurons', 'calcSynapses', 'learnSynapsesPost'])
+
+    get_intermap_firing_winners, clean_spikes, disallow_nearby_stdp, get_intramap_stdp_winners, get_intermap_stdp_winners = \
+            get_kernels('inhibition.cu', ['get_intermap_firing_winners', 'clean_spikes', 'disallow_nearby_stdp', 'get_intramap_stdp_winners', 'get_intermap_stdp_winners'])
+
     def __init__(self, layer_pre, win_width, win_height, stride, map_num, threshold, a_plus, a_minus, learning_rounds):
         super().__init__(layer_pre, win_width, win_height, stride, map_num, threshold)
         self.a_plus = np.float32(a_plus)
         self.a_minus = np.float32(a_minus)
         self.learning_rounds = learning_rounds
-
-        self.calc_neurons, self.calc_synapses, self.learn_synapses_post = \
-                get_kernels('layer_conv.cu', ['calcNeurons', 'calcSynapses', 'learnSynapsesPost'])
-
-        self.get_intermap_firing_winners, self.clean_spikes, self.disallow_nearby_stdp, self.get_intramap_stdp_winners, self.get_intermap_stdp_winners = \
-                get_kernels('inhibition.cu', ['get_intermap_firing_winners', 'clean_spikes', 'disallow_nearby_stdp', 'get_intramap_stdp_winners', 'get_intermap_stdp_winners'])
 
         self.plastic = gpuarray.zeros(shape=(1,), dtype=np.bool)
         self.weights = gpuarray.to_gpu(np.random.normal(0.8, 0.01, (self.map_num * self.win_size * self.layer_pre.map_num,)).astype(np.float32))
@@ -213,10 +214,10 @@ class LayerConv(LayerNonInput):
 
 
 class LayerPool(LayerNonInput):
+    calc_neurons, calc_synapses = get_kernels('layer_pool.cu', ['calcNeurons', 'calcSynapses'])
+
     def __init__(self, layer_pre, win_width, win_height, stride):
         super().__init__(layer_pre, win_width, win_height, stride, map_num=layer_pre.map_num, threshold=0)
-
-        self.calc_neurons, self.calc_synapses = get_kernels('layer_pool.cu', ['calcNeurons', 'calcSynapses'])
 
         self.g = gpuarray.empty(shape=(self.layer_size * self.layer_pre.layer_size,), dtype=np.bool)
 

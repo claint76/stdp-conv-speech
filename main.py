@@ -62,7 +62,7 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
     else:
         output = (np.empty((data_set[1].size, network.layers[-1].layer_size), dtype=np.float32), np.empty((data_set[1].size,), dtype=np.int64))
         run(output)
-        with open('output/output.pickle', 'wb') as f:
+        with open('output/output_{}.pickle'.format(phase), 'wb') as f:
             pickle.dump(output, f)
 
 print('Elapsed Time: {} seconds'.format(time.time() - start_time))

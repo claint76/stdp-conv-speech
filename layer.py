@@ -53,7 +53,7 @@ class LayerInput(LayerBase):
                 t, self.layer_size,
                 self.spike_count, self.spikes,
                 self.spike_time, self.fired,
-                block=(block_size, 1, 1), grid=(int(grid_size), 1))
+                block=(block_size, 1, 1), grid=(grid_size, 1))
 
 
 class LayerNonInput(LayerBase):

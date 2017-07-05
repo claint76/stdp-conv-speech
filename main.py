@@ -22,7 +22,7 @@ with open('params.json') as f:
 network = Network(params)
 
 def print_progress(progress):
-    print('\r[{:50}] {:5.2f}%'.format('#' * int(progress * 50), progress * 100), end='', flush=True)
+    print('\r[{:50}] {:6.2f}%'.format('#' * int(progress * 50), progress * 100), end='', flush=True)
     if progress == 1:
         print()
 

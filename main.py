@@ -51,6 +51,7 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
 
     if phase == 0:
         for l, layer in enumerate(network.layers):
+            network.active_layers.append(layer)
             if hasattr(layer, 'plastic'):
                 print('Training layer {} for {} rounds...'.format(l, layer.learning_rounds))
                 layer.plastic.fill(True)

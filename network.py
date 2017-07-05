@@ -10,6 +10,7 @@ class Network:
         self.it = 0
         self.dt = 0.1
 
+        self.active_layers = []
         self.layers = []
         for layer_param in params['layers']:
             if layer_param['type'] == 'input':
@@ -52,11 +53,11 @@ class Network:
 
     def step(self):
         t = numpy.float32(self.it * self.dt)
-        for layer in self.layers:
+        for layer in self.active_layers:
             layer.step(t)
         self.it += 1
 
     def inhibit(self):
-        for layer in self.layers:
+        for layer in self.active_layers:
             if hasattr(layer, 'inhibit'):
                 layer.inhibit()

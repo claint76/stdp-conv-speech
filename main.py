@@ -31,7 +31,7 @@ start_time = time.time()
 for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on test_set
     print('Phase {}:'.format(phase))
 
-    if (phase == 2):
+    if phase == 2:
         data_set = test_set
     else:
         data_set = train_set
@@ -49,7 +49,7 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
                 output[1][i] = data_set[1][i]
             print_progress((i + 1) / data_set[1].size)
 
-    if (phase == 0):
+    if phase == 0:
         for l, layer in enumerate(network.layers):
             if hasattr(layer, 'plastic'):
                 print('Training layer {} for {} rounds...', l, layer.learning_rounds)

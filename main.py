@@ -54,12 +54,12 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
                 for r in range(layer.learning_rounds):
                     run()
                 layer.plastic.fill(False)
-                with open('../output/weights_layer_{}.pickle'.format(l), 'wb') as f:
+                with open('output/weights_layer_{}.pickle'.format(l), 'wb') as f:
                     pickle.dump(layer.weights.get(), f)
     else:
         output = (np.empty((data_set[1].size, network.layers[-1].layer_size), dtype=np.float32), np.empty((data_set[1].size,), dtype=np.int64))
         run(output)
-        with open('../output/output.pickle', 'wb') as f:
+        with open('output/output.pickle', 'wb') as f:
             pickle.dump(output, f)
 
 print("Elapsed Time: {} seconds".format(time.time() - start_time))

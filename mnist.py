@@ -7,7 +7,7 @@ import os.path
 from scipy.ndimage.filters import gaussian_filter
 
 def read_mnist():
-    mnist_dog_file = '../data/mnist_dog.pickle'
+    mnist_dog_file = 'data/mnist_dog.pickle'
 
     if os.path.isfile(mnist_dog_file):
         print('Reading {}...'.format(mnist_dog_file))
@@ -16,7 +16,7 @@ def read_mnist():
     else:
         print('Cannot find ' + mnist_dog_file)
         print('Reading original MNIST...')
-        with gzip.open('../data/mnist.pkl.gz', 'rb') as f:
+        with gzip.open('data/mnist.pkl.gz', 'rb') as f:
             train_set, valid_set, test_set = pickle.load(f, encoding='latin1')
         train_set = (np.append(train_set[0], valid_set[0], axis=0), np.append(train_set[1], valid_set[1], axis=0))
 

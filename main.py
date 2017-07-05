@@ -13,6 +13,7 @@ from mnist import read_mnist
 from network import Network
 
 
+print('Creating MNIST...')
 train_set, test_set = read_mnist()
 
 print('Creating network...')

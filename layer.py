@@ -110,7 +110,7 @@ class LayerConv(LayerNonInput):
         self.allow_stdp_map = gpuarray.empty(shape=(self.map_num,), dtype=np.bool) # inhibit STDP on same map in the following timesteps
         self.allow_stdp_loc = gpuarray.empty(shape=(self.map_size,), dtype=np.bool) # inhibit STDP on other maps in the following timesteps
 
-        self.generate_connections() 
+        self.generate_connections()
         self.reset()
 
     def reset(self):

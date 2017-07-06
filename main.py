@@ -40,7 +40,8 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
     def run(output=None):
         for i in range(data_set[1].size):
             network.reset()
-            network.layers[0].spike_time.set(30 / data_set[0][i].astype(np.float32))
+            with np.errstate(divide='ignore'):
+                network.layers[0].spike_time.set(30 / data_set[0][i].astype(np.float32))
             for j in range(10):
                 network.step()
                 network.inhibit()

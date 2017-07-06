@@ -40,7 +40,7 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
     def run(output=None):
         for i in range(data_set[1].size):
             network.reset()
-            network.layers[0].spike_time.set(1 - data_set[0][i])
+            network.layers[0].spike_time.set(30 / data_set[0][i].astype(np.float32))
             for j in range(10):
                 network.step()
                 network.inhibit()
@@ -61,7 +61,7 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
                 with open('output/weights_layer_{}.pickle'.format(l), 'wb') as f:
                     pickle.dump(layer.weights.get(), f)
     else:
-        output = (np.empty((data_set[1].size, network.layers[-1].layer_size), dtype=np.float32), np.empty((data_set[1].size,), dtype=np.int64))
+        output = (np.empty((data_set[1].size, network.layers[-1].layer_size), dtype=np.float32), np.empty((data_set[1].size,), dtype=np.int8))
         run(output)
         with open('output/output_{}.pickle'.format(phase), 'wb') as f:
             pickle.dump(output, f)

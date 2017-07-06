@@ -51,15 +51,23 @@ for phase in range(3): # 0: train on train_set, 1: test on train_set, 2: test on
             print_progress((i + 1) / data_set[1].size)
 
     if phase == 0:
-        for l, layer in enumerate(network.layers):
+        for layer in network.layers:
             network.active_layers.append(layer)
             if hasattr(layer, 'plastic'):
-                print('Training layer {} for {} rounds...'.format(l, layer.learning_rounds))
+                i = network.layers.index(layer)
+
+                if i < 2: # train from layer x
+                    with open('output/weights_layer_{}.pickle'.format(i), 'rb') as f:
+                        layer.weights.set(pickle.load(f))
+                        continue
+
+                print('Training layer {} for {} rounds...'.format(i, layer.learning_rounds))
                 layer.plastic.fill(True)
                 for r in range(layer.learning_rounds):
                     run()
                 layer.plastic.fill(False)
-                with open('output/weights_layer_{}.pickle'.format(l), 'wb') as f:
+
+                with open('output/weights_layer_{}.pickle'.format(i), 'wb') as f:
                     pickle.dump(layer.weights.get(), f)
     else:
         output = (np.empty((data_set[1].size, network.layers[-1].layer_size), dtype=np.float32), np.empty((data_set[1].size,), dtype=np.int8))

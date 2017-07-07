@@ -98,6 +98,8 @@ if to_test:
                 with open(weights_path.format(network.layers.index(layer)), 'rb') as f:
                     layer.weights.set(pickle.load(f))
 
+    network.active_layers = network.layers
+
     get_output = lambda n: (np.empty((n, network.layers[-1].layer_size), dtype=np.float32), np.empty((n,), dtype=np.int8))
 
     print('Testing on train_set...')

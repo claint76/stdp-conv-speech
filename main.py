@@ -61,7 +61,7 @@ if to_train:
         if hasattr(layer, 'plastic'):
             i = network.layers.index(layer)
 
-            if i < 2: # train from layer x
+            if i < train_from_layer: # train from layer x
                 with open(weights_path.format(i), 'rb') as f:
                     layer.weights.set(pickle.load(f))
                     continue

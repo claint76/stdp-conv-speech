@@ -54,7 +54,11 @@ class Network:
     def step(self):
         t = numpy.float32(self.it * self.dt)
         for layer in self.active_layers:
-            layer.step(t)
+            layer.step_synapses(t)
+        for layer in self.active_layers:
+            layer.step_synapses_post(t)
+        for layer in self.active_layers:
+            layer.step_neurons(t)
         self.it += 1
 
     def inhibit(self):

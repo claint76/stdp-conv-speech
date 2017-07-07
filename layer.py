@@ -37,6 +37,12 @@ class LayerBase:
         self.spike_count.fill(0)
         self.fired.fill(False)
 
+    def step_synapses(self, t):
+        pass
+
+    def step_synapses_post(self, t):
+        pass
+
 
 class LayerInput(LayerBase):
     (calc_neurons,) = get_kernels('layer_input.cu', ['calcNeurons'])
@@ -48,7 +54,7 @@ class LayerInput(LayerBase):
 
         self.reset()
 
-    def step(self, t):
+    def step_neurons(self, t):
         grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
         self.spike_count.fill(0)
         self.calc_neurons(
@@ -77,7 +83,6 @@ class LayerNonInput(LayerBase):
     def reset(self):
         super().reset()
         self.V.fill(0)
-
 
 class LayerConv(LayerNonInput):
     calc_neurons, calc_synapses, learn_synapses_post = \
@@ -155,7 +160,7 @@ class LayerConv(LayerNonInput):
         with open(g_file, 'wb') as f:
             pickle.dump(g_host, f)
 
-    def step(self, t):
+    def step_synapses(self, t):
         grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
         self.calc_synapses(
                 t, self.layer_size,
@@ -163,6 +168,7 @@ class LayerConv(LayerNonInput):
                 self.g, self.weights,
                 block=(block_size,1,1), grid=(grid_size,1))
 
+    def step_synapses_post(self, t):
         grid_size = int((self.layer_pre.layer_size + block_size - 1) // block_size) # must be converted to int
         self.learn_synapses_post(
                 t, self.layer_pre.layer_size, self.layer_size,
@@ -171,6 +177,7 @@ class LayerConv(LayerNonInput):
                 self.a_plus, self.a_minus, self.map_size,
                 block=(block_size,1,1), grid=(grid_size,1))
 
+    def step_neurons(self, t):
         self.spike_count.fill(0)
         grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
         self.calc_neurons(
@@ -268,7 +275,7 @@ class LayerPool(LayerNonInput):
         with open(g_file, 'wb') as f:
             pickle.dump(g_host, f)
 
-    def step(self, t):
+    def step_synapses(self, t):
         grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
         self.calc_synapses(
                 t, self.layer_size,
@@ -276,6 +283,7 @@ class LayerPool(LayerNonInput):
                 self.g,
                 block=(block_size,1,1), grid=(grid_size,1))
 
+    def step_neurons(self, t):
         self.spike_count.fill(0)
         self.calc_neurons(
                 t, self.layer_size,

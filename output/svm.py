@@ -4,9 +4,9 @@ import pickle
 from sklearn import svm
 
 
-with open('output_1.pickle', 'rb') as f:
+with open('output_train_set.pickle', 'rb') as f:
     train_set = pickle.load(f)
-with open('output_2.pickle', 'rb') as f:
+with open('output_test_set.pickle', 'rb') as f:
     test_set = pickle.load(f)
 
 clf = svm.SVC(kernel='linear')

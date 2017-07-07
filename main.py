@@ -3,6 +3,7 @@
 import json
 import numpy as np
 import pickle
+import sys
 import time
 
 import pycuda.driver as cuda
@@ -45,6 +46,15 @@ def run(data_set, output=None):
 
 to_train = True
 to_test = True
+
+if len(sys.argv) > 1:
+    if sys.argv[1] == 'train':
+        to_test = False
+    elif sys.argv[1] == 'test':
+        to_train = False
+    else:
+        print('Invalid argument!')
+        exit(1)
 
 if to_train:
     train_from_layer = 1

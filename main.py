@@ -37,7 +37,6 @@ def run(data_set, output=None):
             network.layers[0].spike_time.set(30 / data_set[0][i].astype(np.float32))
         for j in range(10):
             network.step()
-            network.inhibit()
         if output is not None:
             network.layers[-1].V.get(output[0][i])
             output[1][i] = data_set[1][i]

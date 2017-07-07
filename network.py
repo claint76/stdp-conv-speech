@@ -59,9 +59,7 @@ class Network:
             layer.step_synapses_post(t)
         for layer in self.active_layers:
             layer.step_neurons(t)
-        self.it += 1
-
-    def inhibit(self):
         for layer in self.active_layers:
             if hasattr(layer, 'inhibit'):
                 layer.inhibit()
+        self.it += 1

@@ -88,16 +88,16 @@ if to_test:
                 with open(weights_path.format(network.layers.index(layer)), 'rb') as f:
                     layer.weights.set(pickle.load(f))
 
+    get_output = lambda n: (np.empty((n, network.layers[-1].layer_size), dtype=np.float32), np.empty((n,), dtype=np.int8))
+
     print('Testing on train_set...')
-    n = train_set[1].size
-    output = (np.empty((n, network.layers[-1].layer_size), dtype=np.float32), np.empty((n,), dtype=np.int8))
+    output = get_output(train_set[1].size)
     run(train_set, output)
     with open('output/output_train_set.pickle', 'wb') as f:
         pickle.dump(output, f)
 
     print('Testing on test_set...')
-    n = test_set[1].size
-    output = (np.empty((n, network.layers[-1].layer_size), dtype=np.float32), np.empty((n,), dtype=np.int8))
+    output = get_output(test_set[1].size)
     run(test_set, output)
     with open('output/output_test_set.pickle', 'wb') as f:
         pickle.dump(output, f)

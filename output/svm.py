@@ -9,7 +9,7 @@ with open('output_train_set.pickle', 'rb') as f:
 with open('output_test_set.pickle', 'rb') as f:
     test_set = pickle.load(f)
 
-clf = svm.SVC(kernel='linear')
+clf = svm.SVC(kernel='linear', verbose=True)
 clf.fit(train_set[0], train_set[1])
 score = clf.score(test_set[0], test_set[1])
 print(score)

@@ -107,7 +107,7 @@ if to_train:
             with open(weights_path.format(i), 'wb') as f:
                 pickle.dump(layer.weights.get(), f)
 
-    print('Training time: {} seconds'.format(time.time() - start_time))
+    print('Training time: {.2f} seconds'.format(time.time() - start_time))
 
 
 if to_test:
@@ -140,4 +140,4 @@ if to_test:
     with open('output/output_test_set.pickle', 'wb') as f:
         pickle.dump(output, f)
 
-    print('Testing time: {} seconds'.format(time.time() - start_time))
+    print('Testing time: {.2f} seconds'.format(time.time() - start_time))

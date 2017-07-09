@@ -285,6 +285,7 @@ class LayerPool(LayerNonInput):
 
     def step_neurons(self, t):
         self.spike_count.fill(0)
+        grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
         self.calc_neurons(
                 t, self.layer_size,
                 self.spike_count, self.spikes, self.in_syn,

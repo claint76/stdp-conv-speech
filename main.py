@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import json
 import numpy as np
 import pickle
@@ -14,6 +15,30 @@ from mnist import read_mnist
 from network import Network
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-s', '--stage', choices=['train', 'test'])
+parser.add_argument('-l', '--train_from', type=int)
+args = parser.parse_args()
+
+
+to_train = True
+to_test = True
+
+if args.stage:
+    if args.stage == 'train':
+        to_test = False
+    elif args.stage == 'test':
+        to_train = False
+
+if args.train_from:
+    train_from_layer = args.train_from
+else:
+    train_from_layer = 1
+
+
+weights_path = 'output/weights_layer_{}.pickle'
+
+
 print('Reading MNIST...')
 train_set, test_set = read_mnist()
 
@@ -22,24 +47,6 @@ print('Creating network...')
 with open('params.json') as f:
     params = json.load(f)
 network = Network(params)
-
-
-to_train = True
-to_test = True
-
-if len(sys.argv) > 1:
-    if sys.argv[1] == 'train':
-        to_test = False
-    elif sys.argv[1] == 'test':
-        to_train = False
-    else:
-        print('Invalid argument!')
-        exit(1)
-
-if to_train:
-    train_from_layer = 1
-
-weights_path = 'output/weights_layer_{}.pickle'
 
 
 record = None

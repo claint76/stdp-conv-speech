@@ -14,14 +14,32 @@ from mnist import read_mnist
 from network import Network
 
 
-print('Creating MNIST...')
-train_set, test_set = read_mnist()
+to_train = True
+to_test = True
+
+if len(sys.argv) > 1:
+    if sys.argv[1] == 'train':
+        to_test = False
+    elif sys.argv[1] == 'test':
+        to_train = False
+    else:
+        print('Invalid argument!')
+        exit(1)
+
+if to_train:
+    train_from_layer = 1
+
+weights_path = 'output/weights_layer_{}.pickle'
 
 
 print('Creating network...')
 with open('params.json') as f:
     params = json.load(f)
 network = Network(params)
+
+
+print('Creating MNIST...')
+train_set, test_set = read_mnist()
 
 
 def print_progress(progress):
@@ -41,24 +59,6 @@ def run(data_set, output=None):
             network.layers[-1].V.get(output[0][i])
             output[1][i] = data_set[1][i]
         print_progress((i + 1) / data_set[1].size)
-
-
-to_train = True
-to_test = True
-
-if len(sys.argv) > 1:
-    if sys.argv[1] == 'train':
-        to_test = False
-    elif sys.argv[1] == 'test':
-        to_train = False
-    else:
-        print('Invalid argument!')
-        exit(1)
-
-if to_train:
-    train_from_layer = 1
-
-weights_path = 'output/weights_layer_{}.pickle'
 
 
 if to_train:

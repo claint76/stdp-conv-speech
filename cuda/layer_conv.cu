@@ -107,7 +107,7 @@ __global__ void learnSynapsesPost(
                 // begin
                 ////////////////////////////////////////////////////////////
                 unsigned id_post = shared_spikes[j];
-                if (g[id_pre * layer_size_post + id_post] > -1 && *(plastic)) {
+                if (g[id_pre * layer_size_post + id_post] > -1 && *plastic) {
                     float *pw = weights + g[id_pre * layer_size_post + id_post];
                     float w = *pw;
 

@@ -35,7 +35,12 @@
             "learning_rounds": 3
         },
         {
-            "type": "globalpool"
+            "type": "supe",
+            "map_num": 10,
+            "threshold": 20,
+            "a_plus": 0.004,
+            "a_minus": 0.003,
+            "learning_rounds": 1
         }
     ]
 }

@@ -2,7 +2,7 @@
 
 import numpy
 
-from layer import LayerInput, LayerConv, LayerPool
+from layer import LayerInput, LayerConv, LayerPool, LayerSupe
 
 
 class Network:
@@ -44,6 +44,15 @@ class Network:
                     self.layers[-1].width,
                     self.layers[-1].height,
                     1, # stride not used
+                ))
+            elif layer_param['type'] == 'supe':
+                self.layers.append(LayerSupe(
+                    self.layers[-1],
+                    layer_param['map_num'],
+                    layer_param['threshold'],
+                    layer_param['a_plus'],
+                    layer_param['a_minus'],
+                    layer_param['learning_rounds'],
                 ))
 
     def reset(self):

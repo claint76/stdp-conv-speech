@@ -14,6 +14,16 @@ from mnist import read_mnist
 from network import Network
 
 
+print('Reading MNIST...')
+train_set, test_set = read_mnist()
+
+
+print('Creating network...')
+with open('params.json') as f:
+    params = json.load(f)
+network = Network(params)
+
+
 to_train = True
 to_test = True
 
@@ -32,14 +42,11 @@ if to_train:
 weights_path = 'output/weights_layer_{}.pickle'
 
 
-print('Creating network...')
-with open('params.json') as f:
-    params = json.load(f)
-network = Network(params)
-
-
-print('Creating MNIST...')
-train_set, test_set = read_mnist()
+record = None
+if params['layers'][-1]['type'] == 'supe':
+    record = 'spike_time'
+elif params['layers'][-1]['type'] == 'globalpool':
+    record = 'V'
 
 
 def print_progress(progress):
@@ -53,11 +60,20 @@ def run(data_set, output=None):
         network.reset()
         with np.errstate(divide='ignore'):
             network.layers[0].spike_time.set(30 / data_set[0][i].astype(np.float32))
+        if hasattr(network.active_layers[-1], 'label'):
+            network.active_layers[-1].label.fill(data_set[1][i])
+
         for j in range(10):
             network.step()
-        if output is not None:
+
+            if output is not None and record == 'spike_time':
+                spikes = network.layers[-1].spikes.get()[:network.layers[-1].spike_count.get()[0]]
+                output[0][i][spikes] = network.it
+
+        if output is not None and record == 'V':
             network.layers[-1].V.get(output[0][i])
             output[1][i] = data_set[1][i]
+
         print_progress((i + 1) / data_set[1].size)
 
 
@@ -99,7 +115,11 @@ if to_test:
 
     network.active_layers = network.layers
 
-    get_output = lambda n: (np.empty((n, network.layers[-1].layer_size), dtype=np.float32), np.empty((n,), dtype=np.int8))
+    def get_output(n):
+        output = (np.empty((n, network.layers[-1].layer_size), dtype=np.float32), np.empty((n,), dtype=np.int8))
+        if record == 'spike_time':
+            output[0].fill(np.inf)
+        return output
 
     print('Testing on train_set...')
     output = get_output(train_set[1].size)

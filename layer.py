@@ -292,3 +292,48 @@ class LayerPool(LayerNonInput):
                 self.V, self.fired,
                 self.threshold,
                 block=(block_size,1,1), grid=(grid_size,1))
+
+
+class LayerSupe(LayerNonInput):
+    calc_neurons, calc_synapses, learn_synapses_post = \
+            get_kernels('layer_supe.cu', ['calcNeurons', 'calcSynapses', 'learnSynapsesPost'])
+
+    def __init__(self, layer_pre, map_num, threshold, a_plus, a_minus, learning_rounds):
+        super().__init__(layer_pre, layer_pre.width, layer_pre.height, 1, map_num, threshold)
+        self.a_plus = np.float32(a_plus)
+        self.a_minus = np.float32(a_minus)
+        self.learning_rounds = learning_rounds
+
+        self.plastic = gpuarray.zeros(shape=(1,), dtype=np.bool)
+        self.weights = gpuarray.to_gpu(np.random.normal(0.8, 0.01, (self.layer_size * self.layer_pre.layer_size,)).astype(np.float32))
+        self.g = gpuarray.to_gpu(np.arange(self.layer_size * self.layer_pre.layer_size).reshape((self.layer_size, self.layer_pre.layer_size)).transpose().astype(np.int32))
+        self.label = gpuarray.empty(shape=(1,), dtype=np.int32)
+
+        self.reset()
+
+    def step_synapses(self, t):
+        grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
+        self.calc_synapses(
+                t, self.layer_size,
+                self.layer_pre.spike_count, self.layer_pre.spikes, self.in_syn,
+                self.g, self.weights,
+                block=(block_size,1,1), grid=(grid_size,1))
+
+    def step_synapses_post(self, t):
+        grid_size = int((self.layer_pre.layer_size + block_size - 1) // block_size) # must be converted to int
+        self.learn_synapses_post(
+                t, self.layer_pre.layer_size, self.layer_size,
+                self.spike_count, self.spikes, self.layer_pre.fired,
+                self.g, self.weights, self.plastic, self.label,
+                self.a_plus, self.a_minus,
+                block=(block_size,1,1), grid=(grid_size,1))
+
+    def step_neurons(self, t):
+        self.spike_count.fill(0)
+        grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
+        self.calc_neurons(
+                t, self.layer_size,
+                self.spike_count, self.spikes, self.in_syn,
+                self.V, self.fired,
+                self.threshold,
+                block=(block_size,1,1), grid=(grid_size,1))

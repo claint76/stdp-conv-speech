@@ -6,6 +6,7 @@ import numpy as np
 import pickle
 import sys
 import time
+from sklearn import svm
 
 import pycuda.driver as cuda
 import pycuda.autoinit
@@ -129,15 +130,27 @@ if to_test:
         return output
 
     print('Testing on train_set...')
-    output = get_output(train_set[1].size)
-    run(train_set, output)
+    train_output = get_output(train_set[1].size)
+    run(train_set, train_output)
     with open('output/output_train_set.pickle', 'wb') as f:
-        pickle.dump(output, f)
+        pickle.dump(train_output, f)
 
     print('Testing on test_set...')
-    output = get_output(test_set[1].size)
-    run(test_set, output)
+    test_output = get_output(test_set[1].size)
+    run(test_set, test_output)
     with open('output/output_test_set.pickle', 'wb') as f:
-        pickle.dump(output, f)
+        pickle.dump(test_output, f)
 
     print('Testing time: {.2f} seconds'.format(time.time() - start_time))
+
+
+    if params['layers'][-1]['type'] == 'globalpool':
+        print('Running SVM on V of global pooling layer...')
+        start_time = time.time()
+
+        clf = svm.SVC(kernel='linear')
+        clf.fit(train_output[0], train_output[1])
+        score = clf.score(test_output[0], test_output[1])
+        print('Accuracy:', score)
+
+        print('SVM time: {.2f} seconds'.format(time.time() - start_time))

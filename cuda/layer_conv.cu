@@ -106,11 +106,11 @@ __global__ void learnSynapsesPost(
                 ////////////////////////////////////////////////////////////
                 // begin
                 ////////////////////////////////////////////////////////////
-                if (g[id_pre * layer_size_post + shared_spikes[j]] > -1 && *(plastic)) {
-                    float *pw = weights + g[id_pre * layer_size_post + shared_spikes[j]];
+                unsigned id_post = shared_spikes[j];
+                if (g[id_pre * layer_size_post + id_post] > -1 && *(plastic)) {
+                    float *pw = weights + g[id_pre * layer_size_post + id_post];
                     float w = *pw;
 
-                    unsigned id_post = shared_spikes[j];
                     if (winners_intramap[id_post / map_size] == id_post) { // if post-neuron is winner of current map
                         if (fired_pre[id_pre])
                             *pw += a_plus * w * (1 - w);

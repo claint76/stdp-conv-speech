@@ -19,7 +19,7 @@ from network import Network
 parser = argparse.ArgumentParser()
 parser.add_argument('params_file')
 parser.add_argument('-s', '--stage', choices=['train', 'test'])
-parser.add_argument('-l', '--train_from', type=int)
+parser.add_argument('-l', '--train_from_layer', type=int)
 args = parser.parse_args()
 
 
@@ -32,8 +32,8 @@ if args.stage:
     elif args.stage == 'test':
         to_train = False
 
-if args.train_from:
-    train_from_layer = args.train_from
+if args.train_from_layer:
+    train_from_layer = args.train_from_layer
 else:
     train_from_layer = 1
 

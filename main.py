@@ -154,4 +154,4 @@ if to_test:
         score = clf.score(test_output[0], test_output[1])
         print('Accuracy:', score)
 
-        print('SVM time: {.2f} seconds'.format(time.time() - start_time))
+        print('SVM time: {:.2f} seconds'.format(time.time() - start_time))

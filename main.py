@@ -17,6 +17,7 @@ from network import Network
 
 
 parser = argparse.ArgumentParser()
+parser.add_argument('params_file')
 parser.add_argument('-s', '--stage', choices=['train', 'test'])
 parser.add_argument('-l', '--train_from', type=int)
 args = parser.parse_args()
@@ -45,7 +46,7 @@ train_set, test_set = read_mnist()
 
 
 print('Creating network...')
-with open('params.json') as f:
+with open(args.params_file) as f:
     params = json.load(f)
 network = Network(params)
 

@@ -105,8 +105,8 @@ class LayerConv(LayerNonInput):
         self.winners_intramap = gpuarray.empty(shape=(self.map_num,), dtype=np.int32)
         self.winnersV_intermap = gpuarray.empty(shape=(self.map_size,), dtype=np.float32)
         self.winnersV_intramap = gpuarray.empty(shape=(self.map_num,), dtype=np.float32)
-        self.spikes_temp = gpuarray.empty(shape=(self.map_size,), dtype=np.int32)
-        self.spike_count_temp = gpuarray.empty(shape=(1,), dtype=np.int32)
+        self.spikes_temp = gpuarray.empty(shape=(self.map_size,), dtype=np.uint32)
+        self.spike_count_temp = gpuarray.empty(shape=(1,), dtype=np.uint32)
         self.mutex = gpuarray.empty(shape=(1,), dtype=np.int32)
         self.allow_fire_loc = gpuarray.empty(shape=(self.map_size,), dtype=np.bool) # inhibit other firing on same location of other maps in the following timesteps
         self.allow_stdp_map = gpuarray.empty(shape=(self.map_num,), dtype=np.bool) # inhibit STDP on same map in the following timesteps

@@ -6,7 +6,7 @@ import json
 import pickle
 
 
-with open('../params.json') as f:    
+with open('../params_globalpool.json') as f:
     params = json.load(f)
 
 

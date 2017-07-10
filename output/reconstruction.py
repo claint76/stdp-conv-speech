@@ -6,7 +6,7 @@ import json
 import pickle
 
 
-with open('../params.json') as data_file:
+with open('../params_globalpool.json') as data_file:
     params = json.load(data_file)
 
 # conv1

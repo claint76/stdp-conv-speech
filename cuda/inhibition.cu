@@ -5,7 +5,7 @@ __global__ void get_intermap_firing_winners(
 {
     unsigned tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < glbSpkCnt[0]) {
-        int id = glbSpk[tid];
+        unsigned id = glbSpk[tid];
 
         bool need_lock = true;
         while (need_lock) {
@@ -31,7 +31,7 @@ __global__ void clean_spikes(
 {
     unsigned tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < glbSpkCnt[0]) {
-        int id = glbSpk[tid];
+        unsigned id = glbSpk[tid];
 
         if (winners_intermap[id % map_size] == id) {
             unsigned spike_id = atomicAdd(spike_count_temp, 1);
@@ -51,7 +51,7 @@ __global__ void get_intramap_stdp_winners(
 {
     unsigned tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < glbSpkCnt[0]) {
-        int id = glbSpk[tid];
+        unsigned id = glbSpk[tid];
 
         if (allow_stdp_map[id / map_size] && allow_stdp_loc[id % map_size]) {
             bool need_lock = true;

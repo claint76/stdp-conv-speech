@@ -113,9 +113,9 @@ __global__ void learnSynapsesPost(
 
                     if (winners_intramap[id_post / map_size] == id_post) { // if post-neuron is winner of current map
                         if (fired_pre[id_pre])
-                            *pw += a_plus * w * (1 - w);
+                            atomicAdd(pw, a_plus * w * (1 - w));
                         else
-                            *pw -= a_minus * w * (1 - w);
+                            atomicAdd(pw, -a_minus * w * (1 - w));
                     }
                 }
                 ////////////////////////////////////////////////////////////

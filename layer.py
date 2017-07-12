@@ -35,6 +35,7 @@ class LayerBase:
 
     def reset(self):
         self.spike_count.fill(0)
+        self.spikes.fill(0)
         self.fired.fill(False)
 
     def step_synapses(self, t):
@@ -121,6 +122,7 @@ class LayerConv(LayerNonInput):
         self.winners_intramap.fill(-1)
         self.winnersV_intermap.fill(0)
         self.winnersV_intramap.fill(0)
+        self.spikes_temp.fill(0)
         self.spike_count_temp.fill(0)
         self.mutex.fill(0)
         self.allow_fire_loc.fill(True)

@@ -65,36 +65,34 @@ def print_progress(progress):
 
 
 def run(data_set, output=None):
-    for i in range(data_set[1].size):
+    for k in range(data_set[1].size):
         network.reset()
         with np.errstate(divide='ignore'):
-            network.layers[0].spike_time.set(30 / data_set[0][i].astype(np.float32))
+            network.layers[0].spike_time.set(30 / data_set[0][k].astype(np.float32))
         if hasattr(network.active_layers[-1], 'label'):
-            network.active_layers[-1].label.fill(data_set[1][i])
+            network.active_layers[-1].label.fill(data_set[1][k])
 
         for j in range(10):
             network.step()
 
             if output is not None and record == 'spike_time':
                 spikes = network.layers[-1].spikes.get()[:network.layers[-1].spike_count.get()[0]]
-                output[0][i][spikes] = network.it
+                output[0][k][spikes] = network.it
 
         if output is not None and record == 'V':
-            network.layers[-1].V.get(output[0][i])
-            output[1][i] = data_set[1][i]
+            network.layers[-1].V.get(output[0][k])
+            output[1][k] = data_set[1][k]
 
-        print_progress((i + 1) / data_set[1].size)
+        print_progress((k + 1) / data_set[1].size)
 
 
 if to_train:
     print('Training...')
     start_time = time.time()
 
-    for layer in network.layers:
+    for i, layer in enumerate(network.layers):
         network.active_layers.append(layer)
         if hasattr(layer, 'plastic'):
-            i = network.layers.index(layer)
-
             if i < train_from_layer: # train from layer x
                 with open(weights_path.format(i), 'rb') as f:
                     layer.weights.set(pickle.load(f))
@@ -117,9 +115,9 @@ if to_test:
     start_time = time.time()
 
     if not to_train:
-        for layer in network.layers:
+        for i, layer in enumerate(network.layers):
             if hasattr(layer, 'weights'):
-                with open(weights_path.format(network.layers.index(layer)), 'rb') as f:
+                with open(weights_path.format(i), 'rb') as f:
                     layer.weights.set(pickle.load(f))
 
     network.active_layers = network.layers

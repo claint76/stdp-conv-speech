@@ -214,7 +214,7 @@ class LayerConv(LayerNonInput):
         grid_size = int((self.map_num + block_size - 1) // block_size)
         self.disallow_nearby_stdp(
                 self.winners_intramap, self.allow_stdp_map, self.allow_stdp_loc,
-                self.map_num, self.map_size, self.width, self.height, self.win_width//2, # must be called before winners(V)_intramap are reset
+                self.map_num, self.map_size, self.width, self.height, np.uint32(self.win_width//2), # must be called before winners(V)_intramap are reset
                 block=(block_size,1,1), grid=(grid_size,1))
 
         self.winners_intramap.fill(-1)
@@ -229,7 +229,7 @@ class LayerConv(LayerNonInput):
         grid_size = int((self.map_num + block_size - 1) // block_size)
         self.get_intermap_stdp_winners(
                 self.winners_intramap, self.winnersV_intramap,
-                self.map_num, self.map_size, self.width, self.win_width//2,
+                self.map_num, self.map_size, self.width, np.uint32(self.win_width//2),
                 block=(block_size,1,1), grid=(grid_size,1))
 
 

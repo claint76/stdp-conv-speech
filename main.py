@@ -149,12 +149,12 @@ if to_test:
 
         clf = svm.SVC(kernel='linear')
         clf.fit(train_output[0], train_output[1])
-        score = clf.score(test_output[0], test_output[1])
-        print('Accuracy:', score)
+        accuracy = clf.score(test_output[0], test_output[1])
+        print('Accuracy:', accuracy * 100)
 
         print('SVM time: {:.2f} seconds'.format(time.time() - start_time))
     elif params['layers'][-1]['type'] == 'supe':
         print('Calculating accuracy of first spikes of supervised layer...')
 
         accuracy = (np.argmin(test_output[0], axis=1) == test_output[1]).sum() / test_set[1].size
-        print('Accuracy:', accuracy)
+        print('Accuracy:', accuracy * 100)

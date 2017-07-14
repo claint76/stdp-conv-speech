@@ -153,3 +153,8 @@ if to_test:
         print('Accuracy:', score)
 
         print('SVM time: {:.2f} seconds'.format(time.time() - start_time))
+    elif params['layers'][-1]['type'] == 'supe':
+        print('Calculating accuracy of first spikes of supervised layer...')
+
+        accuracy = (np.argmin(test_output[0], axis=1) == test_output[1]).sum() / test_set[1].size
+        print('Accuracy:', accuracy)

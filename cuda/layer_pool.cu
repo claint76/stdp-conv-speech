@@ -1,17 +1,17 @@
 #include <stdio.h>
 
 __global__ void calcNeurons(
-        float t, unsigned layer_size,
-        unsigned *spike_count, unsigned *spikes, float *in_syn,
+        float t, int layer_size,
+        int *spike_count, int *spikes, float *in_syn,
         float *V, bool *fired,
-        unsigned threshold)
+        int threshold)
 {
-    unsigned id = BLOCK_SIZE * blockIdx.x + threadIdx.x;
+    int id = BLOCK_SIZE * blockIdx.x + threadIdx.x;
 
     if (id < layer_size) {
-        __shared__ unsigned spikes_block[BLOCK_SIZE];
-        __shared__ volatile unsigned spike_count_block;
-        __shared__ volatile unsigned spikes_idx;
+        __shared__ int spikes_block[BLOCK_SIZE];
+        __shared__ volatile int spike_count_block;
+        __shared__ volatile int spikes_idx;
 
         if (threadIdx.x == 0) {
             spike_count_block = 0;
@@ -34,7 +34,7 @@ __global__ void calcNeurons(
         ////////////////////////////////////////////////////////////
 
         if (fire)
-            spikes_block[atomicAdd((unsigned *)&spike_count_block, 1)] = id;
+            spikes_block[atomicAdd((int *)&spike_count_block, 1)] = id;
 
         __syncthreads();
         if (threadIdx.x == 0) {
@@ -52,16 +52,16 @@ __global__ void calcNeurons(
 
 
 __global__ void calcSynapses(
-        float t, unsigned layer_size_post,
-        unsigned *spike_count_pre, unsigned *spikes_pre, float *in_syn_post,
+        float t, int layer_size_post,
+        int *spike_count_pre, int *spikes_pre, float *in_syn_post,
         bool *g)
 {
-    unsigned id_post = BLOCK_SIZE * blockIdx.x + threadIdx.x;
+    int id_post = BLOCK_SIZE * blockIdx.x + threadIdx.x;
 
     if (id_post < layer_size_post) {
         float lin_syn_post = in_syn_post[id_post];
 
-        for (unsigned i = 0; i < spike_count_pre[0]; i++) {
+        for (int i = 0; i < spike_count_pre[0]; i++) {
 
             ////////////////////////////////////////////////////////////
             // begin

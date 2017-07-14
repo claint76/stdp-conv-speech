@@ -1,14 +1,14 @@
 __global__ void calcNeurons(
-        float t, unsigned layer_size,
-        unsigned *spike_count, unsigned *spikes,
+        float t, int layer_size,
+        int *spike_count, int *spikes,
         float *spike_time, bool *fired)
 {
-    unsigned id = BLOCK_SIZE * blockIdx.x + threadIdx.x;
+    int id = BLOCK_SIZE * blockIdx.x + threadIdx.x;
 
     if (id < layer_size) {
-        __shared__ unsigned spikes_block[BLOCK_SIZE];
-        __shared__ volatile unsigned spike_count_block;
-        __shared__ volatile unsigned spikes_idx;
+        __shared__ int spikes_block[BLOCK_SIZE];
+        __shared__ volatile int spike_count_block;
+        __shared__ volatile int spikes_idx;
 
         if (threadIdx.x == 0) {
             spike_count_block = 0;
@@ -20,7 +20,7 @@ __global__ void calcNeurons(
         ////////////////////////////////////////////////////////////
         if (t >= spike_time[id] && !fired[id]) {
             fired[id] = true;
-            spikes_block[atomicAdd((unsigned *)&spike_count_block, 1)] = id;
+            spikes_block[atomicAdd((int *)&spike_count_block, 1)] = id;
         }
         ////////////////////////////////////////////////////////////
         // end

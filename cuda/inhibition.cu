@@ -1,11 +1,11 @@
 __global__ void get_intermap_firing_winners(
-        unsigned *glbSpk, unsigned *glbSpkCnt, float *V,
+        int *glbSpk, int *glbSpkCnt, float *V,
         int *winners_intermap, float *winnersV_intermap, int *mutex,
-        unsigned map_size)
+        int map_size)
 {
-    unsigned tid = blockDim.x * blockIdx.x + threadIdx.x;
+    int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < glbSpkCnt[0]) {
-        unsigned id = glbSpk[tid];
+        int id = glbSpk[tid];
 
         bool need_lock = true;
         while (need_lock) {
@@ -25,16 +25,16 @@ __global__ void get_intermap_firing_winners(
 
 
 __global__ void clean_spikes(
-        unsigned *glbSpk, unsigned *glbSpkCnt, float *V, bool *fired,
-        int *winners_intermap, bool *allow_fire_loc, int *mutex, unsigned *spikes_temp, unsigned *spike_count_temp,
-        unsigned map_size)
+        int *glbSpk, int *glbSpkCnt, float *V, bool *fired,
+        int *winners_intermap, bool *allow_fire_loc, int *mutex, int *spikes_temp, int *spike_count_temp,
+        int map_size)
 {
-    unsigned tid = blockDim.x * blockIdx.x + threadIdx.x;
+    int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < glbSpkCnt[0]) {
-        unsigned id = glbSpk[tid];
+        int id = glbSpk[tid];
 
         if (winners_intermap[id % map_size] == id) {
-            unsigned spike_id = atomicAdd(spike_count_temp, 1);
+            int spike_id = atomicAdd(spike_count_temp, 1);
             spikes_temp[spike_id] = id;
             fired[id] = true;
             allow_fire_loc[id % map_size] = false;
@@ -45,13 +45,13 @@ __global__ void clean_spikes(
 
 // allow fired neuron with highest potential in a map to do stdp
 __global__ void get_intramap_stdp_winners(
-        unsigned *glbSpk, unsigned *glbSpkCnt, float *V,
+        int *glbSpk, int *glbSpkCnt, float *V,
         int *winners_intramap, float *winnersV_intramap, bool *allow_stdp_map, bool *allow_stdp_loc, int *mutex,
-        unsigned map_size)
+        int map_size)
 {
-    unsigned tid = blockDim.x * blockIdx.x + threadIdx.x;
+    int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < glbSpkCnt[0]) {
-        unsigned id = glbSpk[tid];
+        int id = glbSpk[tid];
 
         if (allow_stdp_map[id / map_size] && allow_stdp_loc[id % map_size]) {
             bool need_lock = true;
@@ -75,9 +75,9 @@ __global__ void get_intramap_stdp_winners(
 // eliminate winners which are near to a stronger winner in other maps
 __global__ void get_intermap_stdp_winners(
         int *winners_intramap, float *winnersV_intramap,
-        unsigned map_num, unsigned map_size, unsigned width, unsigned radius)
+        int map_num, int map_size, int width, int radius)
 {
-    unsigned tid = blockDim.x * blockIdx.x + threadIdx.x;
+    int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < map_num) {
         int map = tid;
 
@@ -107,9 +107,9 @@ __global__ void get_intermap_stdp_winners(
 // set allow_stdp_map and allow_stdp_loc
 __global__ void disallow_nearby_stdp(
         int *winners_intramap, bool *allow_stdp_map, bool *allow_stdp_loc,
-        unsigned map_num, unsigned map_size, unsigned width, unsigned height, unsigned radius)
+        int map_num, int map_size, int width, int height, int radius)
 {
-    unsigned tid = blockDim.x * blockIdx.x + threadIdx.x;
+    int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < map_num) {
         int map = tid;
 

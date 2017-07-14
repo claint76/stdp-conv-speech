@@ -23,14 +23,14 @@ def get_kernels(cu_file, funcs):
 
 class LayerBase:
     def __init__(self, width, height, map_num):
-        self.width = np.uint32(width)
-        self.height = np.uint32(height)
-        self.map_size = np.uint32(width * height)
-        self.map_num = np.uint32(map_num)
-        self.layer_size = np.uint32(self.map_num * self.map_size)
+        self.width = np.int32(width)
+        self.height = np.int32(height)
+        self.map_size = np.int32(width * height)
+        self.map_num = np.int32(map_num)
+        self.layer_size = np.int32(self.map_num * self.map_size)
 
-        self.spike_count = gpuarray.empty(shape=(1,), dtype=np.uint32)
-        self.spikes = gpuarray.empty(shape=(self.layer_size,), dtype=np.uint32)
+        self.spike_count = gpuarray.empty(shape=(1,), dtype=np.int32)
+        self.spikes = gpuarray.empty(shape=(self.layer_size,), dtype=np.int32)
         self.fired = gpuarray.empty(shape=(self.layer_size,), dtype=np.bool)
 
     def reset(self):
@@ -68,11 +68,11 @@ class LayerInput(LayerBase):
 class LayerNonInput(LayerBase):
     def __init__(self, layer_pre, win_width, win_height, stride, map_num, threshold):
         self.layer_pre = layer_pre
-        self.win_width = np.uint32(win_width)
-        self.win_height = np.uint32(win_height)
-        self.win_size = np.uint32(win_width * win_height)
-        self.stride = np.uint32(stride)
-        self.threshold = np.uint32(threshold)
+        self.win_width = np.int32(win_width)
+        self.win_height = np.int32(win_height)
+        self.win_size = np.int32(win_width * win_height)
+        self.stride = np.int32(stride)
+        self.threshold = np.int32(threshold)
 
         width = (layer_pre.width - win_width) // stride + 1
         height = (layer_pre.height - win_height) // stride + 1
@@ -106,8 +106,8 @@ class LayerConv(LayerNonInput):
         self.winners_intramap = gpuarray.empty(shape=(self.map_num,), dtype=np.int32)
         self.winnersV_intermap = gpuarray.empty(shape=(self.map_size,), dtype=np.float32)
         self.winnersV_intramap = gpuarray.empty(shape=(self.map_num,), dtype=np.float32)
-        self.spikes_temp = gpuarray.empty(shape=(self.map_size,), dtype=np.uint32)
-        self.spike_count_temp = gpuarray.empty(shape=(1,), dtype=np.uint32)
+        self.spikes_temp = gpuarray.empty(shape=(self.map_size,), dtype=np.int32)
+        self.spike_count_temp = gpuarray.empty(shape=(1,), dtype=np.int32)
         self.mutex = gpuarray.empty(shape=(1,), dtype=np.int32)
         self.allow_fire_loc = gpuarray.empty(shape=(self.map_size,), dtype=np.bool) # inhibit other firing on same location of other maps in the following timesteps
         self.allow_stdp_map = gpuarray.empty(shape=(self.map_num,), dtype=np.bool) # inhibit STDP on same map in the following timesteps
@@ -214,7 +214,7 @@ class LayerConv(LayerNonInput):
         grid_size = int((self.map_num + block_size - 1) // block_size)
         self.disallow_nearby_stdp(
                 self.winners_intramap, self.allow_stdp_map, self.allow_stdp_loc,
-                self.map_num, self.map_size, self.width, self.height, np.uint32(self.win_width//2), # must be called before winners(V)_intramap are reset
+                self.map_num, self.map_size, self.width, self.height, np.int32(self.win_width//2), # must be called before winners(V)_intramap are reset
                 block=(block_size,1,1), grid=(grid_size,1))
 
         self.winners_intramap.fill(-1)
@@ -229,7 +229,7 @@ class LayerConv(LayerNonInput):
         grid_size = int((self.map_num + block_size - 1) // block_size)
         self.get_intermap_stdp_winners(
                 self.winners_intramap, self.winnersV_intramap,
-                self.map_num, self.map_size, self.width, np.uint32(self.win_width//2),
+                self.map_num, self.map_size, self.width, np.int32(self.win_width//2),
                 block=(block_size,1,1), grid=(grid_size,1))
 
 

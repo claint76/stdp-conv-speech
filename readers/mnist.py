@@ -7,14 +7,14 @@ import struct
 def read_data():
     labels = []
     for filename in ('train-labels-idx1-ubyte', 't10k-labels-idx1-ubyte'):
-        with open('data/' + filename, 'rb') as f:
+        with open('data/mnist/' + filename, 'rb') as f:
             magic, num = struct.unpack(">II", f.read(8))
             labels.append(np.fromfile(f, dtype=np.int8))
 
     images = []
     for filename in ('train-images-idx3-ubyte-DoG-ON', 't10k-images-idx3-ubyte-DoG-ON', \
             'train-images-idx3-ubyte-DoG-OFF', 't10k-images-idx3-ubyte-DoG-OFF'):
-        with open('data/' + filename, 'rb') as f:
+        with open('data/mnist/' + filename, 'rb') as f:
             magic, num, rows, cols = struct.unpack(">IIII", f.read(16))
             images.append(np.fromfile(f, dtype=np.uint8).reshape(num, rows*cols))
 

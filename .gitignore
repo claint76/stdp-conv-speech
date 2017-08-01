@@ -2,6 +2,6 @@
 __pycache__
 *.pickle
 
-data/*
-!data/*.m
-!data/*.py
+data/**/*.gz
+data/**/*ubyte*
+data/**/*.jpg

@@ -4,7 +4,7 @@ import numpy as np
 import pickle
 import struct
 
-def read_mnist():
+def read_data():
     labels = []
     for filename in ('train-labels-idx1-ubyte', 't10k-labels-idx1-ubyte'):
         with open('data/' + filename, 'rb') as f:

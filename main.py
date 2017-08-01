@@ -12,8 +12,8 @@ import pycuda.driver as cuda
 import pycuda.autoinit
 from pycuda.compiler import SourceModule
 
-from mnist import read_mnist
 from network import Network
+from readers.mnist import read_data
 
 
 parser = argparse.ArgumentParser()
@@ -41,8 +41,8 @@ else:
 weights_path = 'output/weights_layer_{}.pickle'
 
 
-print('Reading MNIST...')
-train_set, test_set = read_mnist()
+print('Reading data...')
+train_set, test_set = read_data()
 
 
 print('Creating network...')

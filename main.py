@@ -102,6 +102,9 @@ if to_train:
             layer.plastic.fill(True)
             for r in range(layer.learning_rounds):
                 run(train_set)
+                with open(weights_path.format(str(i)+'_'+str(r)), 'wb') as f:
+                    pickle.dump(layer.weights.get(), f)
+
             layer.plastic.fill(False)
 
             with open(weights_path.format(i), 'wb') as f:

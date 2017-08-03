@@ -64,7 +64,7 @@ def print_progress(progress):
         print()
 
 
-def run(data_set, output=None):
+def run(data_set, output=None, learning_round=None):
     for k in range(data_set[1].size):
         network.reset()
         with np.errstate(divide='ignore'):
@@ -101,7 +101,7 @@ if to_train:
             print('Training layer {} for {} rounds...'.format(i, layer.learning_rounds))
             layer.plastic.fill(True)
             for r in range(layer.learning_rounds):
-                run(train_set)
+                run(train_set, learning_round=r)
                 with open(weights_path.format(str(i)+'_'+str(r)), 'wb') as f:
                     pickle.dump(layer.weights.get(), f)
 

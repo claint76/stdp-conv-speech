@@ -1,0 +1,58 @@
+{
+    "layers": [
+        {
+            "type": "input",
+            "width": 240,
+            "height": 160,
+            "map_num": 1
+        },
+        {
+            "type": "conv",
+            "map_num": 4,
+            "win_width": 5,
+            "win_height": 5,
+            "stride": 1,
+            "threshold": 10,
+            "a_plus": 0.004,
+            "a_minus": 0.003,
+            "learning_rounds": 5
+        },
+        {
+            "type": "pool",
+            "win_width": 7,
+            "win_height": 7,
+            "stride": 6
+        },
+        {
+            "type": "conv",
+            "map_num": 20,
+            "win_width": 16,
+            "win_height": 16,
+            "stride": 1,
+            "threshold": 60,
+            "a_plus": 0.004,
+            "a_minus": 0.003,
+            "learning_rounds": 6
+        },
+        {
+            "type": "pool",
+            "win_width": 2,
+            "win_height": 2,
+            "stride": 2
+        },
+        {
+            "type": "conv",
+            "map_num": 10,
+            "win_width": 5,
+            "win_height": 5,
+            "stride": 1,
+            "threshold": 2,
+            "a_plus": 0.004,
+            "a_minus": 0.003,
+            "learning_rounds": 7
+        },
+        {
+            "type": "globalpool"
+        }
+    ]
+}

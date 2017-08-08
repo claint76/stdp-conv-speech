@@ -81,22 +81,24 @@ __global__ void get_intermap_stdp_winners(
     if (tid < map_num) {
         int map = tid;
 
-        if (winners_intramap[map] != -1) {
-            int id = winners_intramap[map];
+        int id = winners_intramap[map];
+        if (id != -1) {
             int r = id % map_size / width;
             int c = id % map_size % width;
             int l = radius;
 
             for (int i = 0; i < map_num; i++) {
                 int id2 = winners_intramap[i];
-                int r2 = id2 % map_size / width;
-                int c2 = id2 % map_size % width;
+                if (id2 != -1) {
+                    int r2 = id2 % map_size / width;
+                    int c2 = id2 % map_size % width;
 
-                if (map != i && winnersV_intramap[map] < winnersV_intramap[i]
-                        && r >= r2 - l && r <= r2 + l && c >= c2 - l && c <= c2 + l) {
-                    winners_intramap[map] = -1;
-                    winnersV_intramap[map] = 0;
-                    break;
+                    if (map != i && winnersV_intramap[map] < winnersV_intramap[i]
+                            && r >= r2 - l && r <= r2 + l && c >= c2 - l && c <= c2 + l) {
+                        winners_intramap[map] = -1;
+                        winnersV_intramap[map] = 0;
+                        break;
+                    }
                 }
             }
         }

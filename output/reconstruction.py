@@ -12,13 +12,13 @@ with open('../params_globalpool.json') as data_file:
 # conv1
 with open('weights_layer_1.pickle', 'rb') as f:
     w_pre = pickle.load(f)
-w_pre = w_pre.reshape((params['layers'][1]['map_num'], params['layers'][0]['map_num'], params['layers'][1]['win_height'], params['layers'][1]['win_width']))
+w_pre = w_pre.reshape((params['layers'][1]['map_num'], params['layers'][0]['map_num'], params['layers'][1]['win'], params['layers'][1]['win']))
 w_pre = w_pre.transpose((1, 0, 2, 3))
 
 # conv2
 with open('weights_layer_3.pickle', 'rb') as f:
     w = pickle.load(f)
-w = w.reshape((params['layers'][3]['map_num'], params['layers'][1]['map_num'], params['layers'][3]['win_height'], params['layers'][3]['win_width']))
+w = w.reshape((params['layers'][3]['map_num'], params['layers'][1]['map_num'], params['layers'][3]['win'], params['layers'][3]['win']))
 
 for i in range(100):
     im0 = np.empty([30, w[0][0].shape[0] * w_pre[0][0].shape[0], w[0][0].shape[1] * w_pre[0][0].shape[1]])

@@ -15,7 +15,7 @@ cols = params['layers'][1]['map_num'] // rows
 
 with open('weights_layer_1.pickle', 'rb') as f:
     w = pickle.load(f)
-w = w.reshape((params['layers'][1]['map_num'], params['layers'][0]['map_num'], params['layers'][1]['win_height'], params['layers'][1]['win_width']))
+w = w.reshape((params['layers'][1]['map_num'], params['layers'][0]['map_num'], params['layers'][1]['win'], params['layers'][1]['win']))
 w = w.transpose((0, 2, 3, 1))
 w = np.insert(w, 2, 0., axis=3)
 

@@ -66,16 +66,21 @@ class LayerInput(LayerBase):
 
 
 class LayerNonInput(LayerBase):
-    def __init__(self, layer_pre, win_width, win_height, stride, map_num, threshold):
+    def __init__(self, layer_pre, win, stride, map_num, threshold):
         self.layer_pre = layer_pre
-        self.win_width = np.int32(win_width)
-        self.win_height = np.int32(win_height)
-        self.win_size = np.int32(win_width * win_height)
+
+        if type(win) is tuple:
+            self.win_width = np.int32(win[0])
+            self.win_height = np.int32(win[1])
+        else:
+            self.win_width = self.win_height = np.int32(win)
+        self.win_size = np.int32(self.win_width * self.win_height)
+
         self.stride = np.int32(stride)
         self.threshold = np.int32(threshold)
 
-        width = (layer_pre.width - win_width) // stride + 1
-        height = (layer_pre.height - win_height) // stride + 1
+        width = (layer_pre.width - self.win_width) // stride + 1
+        height = (layer_pre.height - self.win_height) // stride + 1
         super().__init__(width, height, map_num)
 
         self.V = gpuarray.empty(shape=(self.layer_size,), dtype=np.float32)
@@ -92,8 +97,8 @@ class LayerConv(LayerNonInput):
     get_intermap_firing_winners, clean_spikes, disallow_nearby_stdp, get_intramap_stdp_winners, get_intermap_stdp_winners = \
             get_kernels('inhibition.cu', ['get_intermap_firing_winners', 'clean_spikes', 'disallow_nearby_stdp', 'get_intramap_stdp_winners', 'get_intermap_stdp_winners'])
 
-    def __init__(self, layer_pre, win_width, win_height, stride, map_num, threshold, a_plus, a_minus, learning_rounds):
-        super().__init__(layer_pre, win_width, win_height, stride, map_num, threshold)
+    def __init__(self, layer_pre, win, stride, map_num, threshold, a_plus, a_minus, learning_rounds):
+        super().__init__(layer_pre, win, stride, map_num, threshold)
         self.a_plus = np.float32(a_plus)
         self.a_minus = np.float32(a_minus)
         self.learning_rounds = learning_rounds
@@ -236,8 +241,8 @@ class LayerConv(LayerNonInput):
 class LayerPool(LayerNonInput):
     calc_neurons, calc_synapses = get_kernels('layer_pool.cu', ['calcNeurons', 'calcSynapses'])
 
-    def __init__(self, layer_pre, win_width, win_height, stride):
-        super().__init__(layer_pre, win_width, win_height, stride, map_num=layer_pre.map_num, threshold=0)
+    def __init__(self, layer_pre, win, stride):
+        super().__init__(layer_pre, win, stride, map_num=layer_pre.map_num, threshold=0)
 
         self.g = gpuarray.empty(shape=(self.layer_size * self.layer_pre.layer_size,), dtype=np.bool)
 
@@ -301,7 +306,7 @@ class LayerSupe(LayerNonInput):
             get_kernels('layer_supe.cu', ['calcNeurons', 'calcSynapses', 'learnSynapsesPost'])
 
     def __init__(self, layer_pre, map_num, threshold, a_plus, a_minus, learning_rounds):
-        super().__init__(layer_pre, layer_pre.width, layer_pre.height, 1, map_num, threshold)
+        super().__init__(layer_pre, (layer_pre.width, layer_pre.height), 1, map_num, threshold)
         self.a_plus = np.float32(a_plus)
         self.a_minus = np.float32(a_minus)
         self.learning_rounds = learning_rounds

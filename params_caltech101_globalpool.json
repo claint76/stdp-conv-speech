@@ -9,8 +9,7 @@
         {
             "type": "conv",
             "map_num": 4,
-            "win_width": 5,
-            "win_height": 5,
+            "win": 5,
             "stride": 1,
             "threshold": 10,
             "a_plus": 0.004,
@@ -19,15 +18,13 @@
         },
         {
             "type": "pool",
-            "win_width": 7,
-            "win_height": 7,
+            "win": 7,
             "stride": 6
         },
         {
             "type": "conv",
             "map_num": 20,
-            "win_width": 16,
-            "win_height": 16,
+            "win": 16,
             "stride": 1,
             "threshold": 60,
             "a_plus": 0.004,
@@ -36,15 +33,13 @@
         },
         {
             "type": "pool",
-            "win_width": 2,
-            "win_height": 2,
+            "win": 2,
             "stride": 2
         },
         {
             "type": "conv",
             "map_num": 10,
-            "win_width": 5,
-            "win_height": 5,
+            "win": 5,
             "stride": 1,
             "threshold": 2,
             "a_plus": 0.004,

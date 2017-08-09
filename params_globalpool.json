@@ -9,8 +9,7 @@
         {
             "type": "conv",
             "map_num": 30,
-            "win_width": 5,
-            "win_height": 5,
+            "win": 5,
             "stride": 1,
             "threshold": 15,
             "a_plus": 0.004,
@@ -19,15 +18,13 @@
         },
         {
             "type": "pool",
-            "win_width": 2,
-            "win_height": 2,
+            "win": 2,
             "stride": 2
         },
         {
             "type": "conv",
             "map_num": 100,
-            "win_width": 5,
-            "win_height": 5,
+            "win": 5,
             "stride": 1,
             "threshold": 10,
             "a_plus": 0.0004,

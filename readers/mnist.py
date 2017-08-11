@@ -12,8 +12,8 @@ def read_data():
             labels.append(np.fromfile(f, dtype=np.int8))
 
     images = []
-    for filename in ('train-images-idx3-ubyte-DoG-ON', 't10k-images-idx3-ubyte-DoG-ON', \
-            'train-images-idx3-ubyte-DoG-OFF', 't10k-images-idx3-ubyte-DoG-OFF'):
+    for filename in ('train-images-idx3-ubyte-DoG-OFF', 't10k-images-idx3-ubyte-DoG-OFF', \
+            'train-images-idx3-ubyte-DoG-ON', 't10k-images-idx3-ubyte-DoG-ON'):
         with open('data/mnist/' + filename, 'rb') as f:
             magic, num, rows, cols = struct.unpack(">IIII", f.read(16))
             images.append(np.fromfile(f, dtype=np.uint8).reshape(num, rows*cols))

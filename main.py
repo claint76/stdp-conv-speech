@@ -68,7 +68,7 @@ def run(data_set, output=None, learning_round=None):
     for k in range(data_set[1].size):
         network.reset()
         with np.errstate(divide='ignore'):
-            network.layers[0].spike_time.set(30 / data_set[0][k].astype(np.float32))
+            network.layers[0].spike_time.set((30 / data_set[0][k]).astype(np.float32))
         if hasattr(network.active_layers[-1], 'label'):
             network.active_layers[-1].label.fill(data_set[1][k])
 

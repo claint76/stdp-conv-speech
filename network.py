@@ -8,7 +8,7 @@ from layer import LayerInput, LayerConv, LayerPool, LayerSupe
 class Network:
     def __init__(self, params):
         self.it = 0
-        self.dt = 0.1
+        self.dt = 1
 
         self.active_layers = []
         self.layers = []

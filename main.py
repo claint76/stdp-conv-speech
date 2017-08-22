@@ -72,7 +72,7 @@ def run(data_set, output=None, learning_round=None):
         if hasattr(network.active_layers[-1], 'label'):
             network.active_layers[-1].label.fill(data_set[1][k])
 
-        for j in range(20):
+        for j in range(150):
             network.step()
 
             if output is not None and record == 'spike_time':

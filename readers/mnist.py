@@ -30,7 +30,7 @@ def read_data():
                 images.append(np.fromfile(f, dtype=np.uint8).reshape(num, rows*cols))
 
         print('Preprocessing with DoG filter...')
-        images2 = [np.empty((60000, 784 * 2)), np.empty((10000, 784 * 2))]
+        images2 = [np.empty((60000, 784 * 2), dtype=np.uint8), np.empty((10000, 784 * 2), dtype=np.uint8)]
         for i in range(2):
             for j in range(labels[i].size):
                 im1 = gaussian_filter(images[i][j].reshape((28, 28)), sigma=1)

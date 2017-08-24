@@ -68,12 +68,23 @@ def print_progress(progress):
 def run(data_set, output=None, learning_round=None):
     for k in range(data_set[1].size):
         network.reset()
-        with np.errstate(divide='ignore'):
-            network.layers[0].spike_time.set((30 / data_set[0][k]).astype(np.float32))
+
+        d = data_set[0][k]
+        n = np.count_nonzero(d)
+        indices = np.flip(np.argsort(d), axis=0)
+        spikes_per_packet = 20
+        packet_count = (n + spikes_per_packet - 1) // spikes_per_packet
+
+        t = d.astype(np.float32)
+        t[indices[:n]] = np.repeat(np.arange(packet_count), spikes_per_packet)[:n]
+        t[indices[n:]] = np.inf
+
+        network.layers[0].spike_time.set(t)
+
         if hasattr(network.active_layers[-1], 'label'):
             network.active_layers[-1].label.fill(data_set[1][k])
 
-        for j in range(150):
+        for j in range(packet_count):
             network.step()
 
             if output is not None and record == 'spike_time':

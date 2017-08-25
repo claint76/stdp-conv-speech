@@ -44,11 +44,7 @@ def read_data():
                 im_off[im_off < 0] = 0
                 im_off = im_off.astype(np.uint8).reshape((784,))
 
-                # import pdb
-                # pdb.set_trace()
-
                 images2[i][j] = np.append(im_off, im_on)
-
 
         train_set = (images2[0], labels[0])
         test_set = (images2[1], labels[1])

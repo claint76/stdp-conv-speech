@@ -219,7 +219,7 @@ class LayerConv(LayerNonInput):
         grid_size = int((self.map_num + block_size - 1) // block_size)
         self.disallow_nearby_stdp(
                 self.winners_intramap, self.allow_stdp_map, self.allow_stdp_loc,
-                self.map_num, self.map_size, self.width, self.height, np.int32(self.win_width//2), # must be called before winners(V)_intramap are reset
+                self.map_num, self.map_size, self.width, self.height, np.int32(self.win_width), # must be called before winners(V)_intramap are reset
                 block=(block_size,1,1), grid=(grid_size,1))
 
         self.winners_intramap.fill(-1)
@@ -231,11 +231,40 @@ class LayerConv(LayerNonInput):
                 self.winners_intramap, self.winnersV_intramap, self.allow_stdp_map, self.allow_stdp_loc, self.mutex,
                 self.map_size,
                 block=(block_size,1,1), grid=(grid_size,1))
-        grid_size = int((self.map_num + block_size - 1) // block_size)
-        self.get_intermap_stdp_winners(
-                self.winners_intramap, self.winnersV_intramap,
-                self.map_num, self.map_size, self.width, np.int32(self.win_width//2),
-                block=(block_size,1,1), grid=(grid_size,1))
+        # grid_size = int((self.map_num + block_size - 1) // block_size)
+        # self.get_intermap_stdp_winners(
+        #         self.winners_intramap, self.winnersV_intramap,
+        #         self.map_num, self.map_size, self.width, np.int32(self.win_width),
+        #         block=(block_size,1,1), grid=(grid_size,1))
+
+        def is_near(a, b, l):
+            ra = a % self.map_size // self.width
+            ca = a % self.map_size % self.width
+            rb = b % self.map_size // self.width
+            cb = b % self.map_size % self.width
+            return ra >= rb - l and ra <= rb + l and ca >= cb - l and ca <= cb + l
+
+        winners_intramap = self.winners_intramap.get()
+        winnersV_intramap = self.winnersV_intramap.get()
+        new_winners_intramap = np.full_like(winners_intramap, -1)
+        new_winnersV_intramap = np.full_like(winnersV_intramap, 0)
+
+        while True:
+            i = np.argmax(winnersV_intramap)
+            if winnersV_intramap[i] == 0:
+                break
+            new_winners_intramap[i] = winners_intramap[i]
+            new_winnersV_intramap[i] = winnersV_intramap[i]
+
+            for j in winnersV_intramap.nonzero()[0]:
+                if i != j and is_near(winners_intramap[i], winners_intramap[j], self.win_width) and winnersV_intramap[i] > winnersV_intramap[j]:
+                    winners_intramap[j] = -1
+                    winnersV_intramap[j] = 0
+            winners_intramap[i] = -1
+            winnersV_intramap[i] = 0
+
+        self.winners_intramap.set(new_winners_intramap)
+        self.winnersV_intramap.set(new_winnersV_intramap)
 
 
 class LayerPool(LayerNonInput):

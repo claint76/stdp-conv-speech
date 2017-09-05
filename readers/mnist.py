@@ -4,10 +4,10 @@ import numpy as np
 import os.path
 import pickle
 import struct
-from scipy.ndimage.filters import gaussian_filter
+from scipy.ndimage import correlate
 
 def read_data():
-    mnist_dog_file = 'data/mnist/mnist_dog.pickle'
+    mnist_dog_file = 'data/mnist/mnist_dog_2.pickle'
 
     if os.path.isfile(mnist_dog_file):
         print('Reading {}...'.format(mnist_dog_file))
@@ -30,19 +30,29 @@ def read_data():
                 images.append(np.fromfile(f, dtype=np.uint8).reshape(num, rows*cols))
 
         print('Preprocessing with DoG filter...')
-        images2 = [np.empty((60000, 784 * 2), dtype=np.uint8), np.empty((10000, 784 * 2), dtype=np.uint8)]
+        images2 = [np.empty((60000, 784 * 2)), np.empty((10000, 784 * 2))]
+
+        sz = 7
+        sigma1 = 1
+        sigma2 = 2
+        x = np.tile(np.arange(1, sz+1), (7, 1))
+        y = x.transpose()
+        d2 = np.square(x-sz/2-.5) + np.square(y-sz/2-.5)
+        filter = 1/np.sqrt(2*np.pi) * ( 1/sigma1 * np.exp(-d2/2/(sigma1**2)) - 1/sigma2 * np.exp(-d2/2/(sigma2**2)) )
+        filter = filter - filter.mean()
+        filter = filter / filter.max()
+
         for i in range(2):
             for j in range(labels[i].size):
-                im1 = gaussian_filter(images[i][j].reshape((28, 28)), sigma=1)
-                im2 = gaussian_filter(images[i][j].reshape((28, 28)), sigma=2)
+                im = correlate(images[i][j].astype(np.float64).reshape((28, 28)), filter)
 
-                im_on = im1.astype(np.int32) - im2.astype(np.int32)
+                im_on = im.copy()
                 im_on[im_on < 0] = 0
-                im_on = im_on.astype(np.uint8).reshape((784,))
+                im_on = im_on.reshape((784,))
 
-                im_off = im2.astype(np.int32) - im1.astype(np.int32)
+                im_off = -im.copy()
                 im_off[im_off < 0] = 0
-                im_off = im_off.astype(np.uint8).reshape((784,))
+                im_off = im_off.reshape((784,))
 
                 images2[i][j] = np.append(im_off, im_on)
 

@@ -22,7 +22,7 @@ for i in range(params['layers'][1]['map_num']):
     ims.append(plt.imshow(np.zeros((params['layers'][1]['win'], params['layers'][1]['win'], 3)), interpolation="nearest", vmin=0, vmax=1))
 plt.pause(0.1)
 
-for k in range(0, 3000, 100):
+for k in range(0, 3001, 100):
     print(k)
 
     with open('a/w_{}.pickle'.format(k), 'rb') as f:

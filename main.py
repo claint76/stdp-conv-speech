@@ -14,7 +14,7 @@ import pycuda.autoinit
 from pycuda.compiler import SourceModule
 
 from network import Network
-from readers.mnist import read_data
+from readers.tidigits import read_data
 
 
 parser = argparse.ArgumentParser()

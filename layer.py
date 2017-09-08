@@ -70,8 +70,8 @@ class LayerNonInput(LayerBase):
         self.layer_pre = layer_pre
 
         if type(win) is tuple:
-            self.win_width = np.int32(win[0])
-            self.win_height = np.int32(win[1])
+            self.win_height = np.int32(win[0])
+            self.win_width = np.int32(win[1])
         else:
             self.win_width = self.win_height = np.int32(win)
         self.win_size = np.int32(self.win_width * self.win_height)

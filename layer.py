@@ -215,6 +215,9 @@ class LayerConv(LayerNonInput):
         cuda.memcpy_dtod(self.spikes.gpudata, self.spikes_temp.gpudata, self.spikes_temp.nbytes)
         cuda.memcpy_dtod(self.spike_count.gpudata, self.spike_count_temp.gpudata, self.spike_count_temp.nbytes)
 
+        if self.plastic.get()[0] == False:
+            return
+
         # stdp inhibition
         grid_size = int((self.map_num + block_size - 1) // block_size)
         self.disallow_nearby_stdp(

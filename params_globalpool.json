@@ -3,7 +3,7 @@
         {
             "type": "input",
             "width": 40,
-            "height": 26,
+            "height": 30,
             "map_num": 1
         },
         {
@@ -14,7 +14,7 @@
             "threshold": 15,
             "a_plus": 0.004,
             "a_minus": 0.003,
-            "learning_rounds": 3
+            "learning_rounds": 10
         }
     ]
 }

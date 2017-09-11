@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 
 
 def read_data():
+    n_bands = 30
     n_frames = 40
     overlap = 0.5
 
@@ -31,7 +32,7 @@ def read_data():
             return (s[-1][0], s[-2], s[-1][1]) # BH/1A_endpt.wav: sort by '1', 'BH', 'A'
         filelist.sort(key=keyfunc)
 
-        feats = np.empty((n_samples, 26 * n_frames))
+        feats = np.empty((n_samples, n_bands * n_frames))
         labels = np.empty((n_samples,), dtype=np.uint8)
 
         for i, file in enumerate(filelist):
@@ -45,7 +46,7 @@ def read_data():
             duration = sig.size / rate
             winlen = duration / (n_frames * (1 - overlap) + overlap)
             winstep = winlen * (1 - overlap)
-            feat, energy = fbank(sig, rate, winlen, winstep, nfft=4096, winfunc=np.hamming)
+            feat, energy = fbank(sig, rate, winlen, winstep, nfilt=n_bands, nfft=4096, winfunc=np.hamming)
             feat = np.log(feat)
 
             feats[i] = feat[:n_frames].flatten() # feat may have 40 or 41 frames

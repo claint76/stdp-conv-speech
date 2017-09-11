@@ -97,25 +97,28 @@ class LayerConv(LayerNonInput):
     get_intermap_firing_winners, clean_spikes, disallow_nearby_stdp, get_intramap_stdp_winners, get_intermap_stdp_winners = \
             get_kernels('inhibition.cu', ['get_intermap_firing_winners', 'clean_spikes', 'disallow_nearby_stdp', 'get_intramap_stdp_winners', 'get_intermap_stdp_winners'])
 
-    def __init__(self, layer_pre, win, stride, map_num, threshold, a_plus, a_minus, learning_rounds):
+    def __init__(self, layer_pre, win, stride, map_num, sec_num, threshold, a_plus, a_minus, learning_rounds):
         super().__init__(layer_pre, win, stride, map_num, threshold)
+        self.weight_size = np.int32(self.layer_pre.map_num * self.win_size)
+        self.sec_num = np.int32(sec_num)
+        self.sec_size = np.int32(self.height // self.sec_num)
         self.a_plus = np.float32(a_plus)
         self.a_minus = np.float32(a_minus)
         self.learning_rounds = learning_rounds
 
         self.plastic = gpuarray.zeros(shape=(1,), dtype=np.bool)
-        self.weights = gpuarray.to_gpu(np.random.normal(0.8, 0.01, (self.map_num * self.win_size * self.layer_pre.map_num,)).astype(np.float32))
+        self.weights = gpuarray.to_gpu(np.random.normal(0.8, 0.01, (self.sec_num * self.map_num * self.weight_size,)).astype(np.float32))
         self.g = gpuarray.empty(shape=(self.layer_size * self.layer_pre.layer_size,), dtype=np.int32)
 
         self.winners_intermap = gpuarray.empty(shape=(self.map_size,), dtype=np.int32) # inhibit other firing, type should be compatible with atomicCAS
-        self.winners_intramap = gpuarray.empty(shape=(self.map_num,), dtype=np.int32)
+        self.winners_intramap = gpuarray.empty(shape=(self.sec_num * self.map_num,), dtype=np.int32)
         self.winnersV_intermap = gpuarray.empty(shape=(self.map_size,), dtype=np.float32)
-        self.winnersV_intramap = gpuarray.empty(shape=(self.map_num,), dtype=np.float32)
+        self.winnersV_intramap = gpuarray.empty(shape=(self.sec_num * self.map_num,), dtype=np.float32)
         self.spikes_temp = gpuarray.empty(shape=(self.map_size,), dtype=np.int32)
         self.spike_count_temp = gpuarray.empty(shape=(1,), dtype=np.int32)
         self.mutex = gpuarray.empty(shape=(1,), dtype=np.int32)
         self.allow_fire_loc = gpuarray.empty(shape=(self.map_size,), dtype=np.bool) # inhibit other firing on same location of other maps in the following timesteps
-        self.allow_stdp_map = gpuarray.empty(shape=(self.map_num,), dtype=np.bool) # inhibit STDP on same map in the following timesteps
+        self.allow_stdp_map = gpuarray.empty(shape=(self.sec_num * self.map_num,), dtype=np.bool) # inhibit STDP on same map in the following timesteps
         self.allow_stdp_loc = gpuarray.empty(shape=(self.map_size,), dtype=np.bool) # inhibit STDP on other maps in the following timesteps
 
         self.generate_connections()
@@ -152,6 +155,8 @@ class LayerConv(LayerNonInput):
             rpre_base = rpost * self.stride
             cpre_base = cpost * self.stride
 
+            sec = rpost // self.sec_size
+
             for i in range(self.win_size):
                 rpre = rpre_base + i // self.win_width
                 cpre = cpre_base + i % self.win_width
@@ -161,7 +166,8 @@ class LayerConv(LayerNonInput):
                     for map_pre in range(self.layer_pre.map_num):
                         nid_pre = map_pre * self.layer_pre.map_size + ipre
                         gid = nid_pre * self.layer_size + map_post * self.map_size + ipost # index of current synapse
-                        g_host[gid] = map_post * self.layer_pre.map_num * self.win_size + map_pre * self.win_size + i
+                        # g_host[gid] = map_post * self.weight_size + map_pre * self.win_size + i # full shared weights
+                        g_host[gid] = sec * self.map_num * self.weight_size + map_post * self.weight_size + map_pre * self.win_size + i # limited shared weights
         self.g.set(g_host)
 
         with open(g_file, 'wb') as f:

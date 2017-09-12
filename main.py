@@ -123,7 +123,7 @@ if to_train:
                 pickle.dump(layer.weights.get(), f)
 
     seconds = time.time() - start_time
-    print('Training time: {:02d}:{:02d}'.format(seconds // 3600, seconds // 60 % 60))
+    print('Training time: {:02.0f}:{:02.0f}'.format(seconds // 3600, seconds // 60 % 60))
 
 
 if to_test:
@@ -157,7 +157,7 @@ if to_test:
         pickle.dump(test_output, f)
 
     seconds = time.time() - start_time
-    print('Testing time: {:02d}:{:02d}'.format(seconds // 3600, seconds // 60 % 60))
+    print('Testing time: {:02.0f}:{:02.0f}'.format(seconds // 3600, seconds // 60 % 60))
 
 
     if params['layers'][-1]['type'] == 'globalpool':
@@ -170,7 +170,7 @@ if to_test:
         print('Accuracy:', accuracy * 100)
 
         seconds = time.time() - start_time
-        print('SVM time: {:02d}:{:02d}'.format(seconds // 3600, seconds // 60 % 60))
+        print('SVM time: {:02.0f}:{:02.0f}'.format(seconds // 3600, seconds // 60 % 60))
     elif params['layers'][-1]['type'] == 'supe':
         print('Calculating accuracy of first spikes of supervised layer...')
 

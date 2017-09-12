@@ -22,7 +22,7 @@ class Network:
             elif layer_param['type'] == 'conv':
                 self.layers.append(LayerConv(
                     self.layers[-1],
-                    tuple(layer_param['win']),
+                    layer_param['win'],
                     layer_param['stride'],
                     layer_param['map_num'],
                     layer_param['sec_num'],
@@ -34,7 +34,7 @@ class Network:
             elif layer_param['type'] == 'pool':
                 self.layers.append(LayerPool(
                     self.layers[-1],
-                    tuple(layer_param['win']),
+                    layer_param['win'],
                     layer_param['stride'],
                 ))
             elif layer_param['type'] == 'globalpool':

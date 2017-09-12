@@ -94,8 +94,8 @@ class LayerConv(LayerNonInput):
     calc_neurons, calc_synapses, learn_synapses_post = \
             get_kernels('layer_conv.cu', ['calcNeurons', 'calcSynapses', 'learnSynapsesPost'])
 
-    get_intermap_firing_winners, clean_spikes, disallow_nearby_stdp, get_intramap_stdp_winners, get_intermap_stdp_winners = \
-            get_kernels('inhibition.cu', ['get_intermap_firing_winners', 'clean_spikes', 'disallow_nearby_stdp', 'get_intramap_stdp_winners', 'get_intermap_stdp_winners'])
+    get_intermap_firing_winners, clean_spikes, disallow_nearby_stdp, get_intramap_stdp_winners = \
+            get_kernels('inhibition.cu', ['get_intermap_firing_winners', 'clean_spikes', 'disallow_nearby_stdp', 'get_intramap_stdp_winners'])
 
     def __init__(self, layer_pre, win, stride, map_num, sec_num, threshold, a_plus, a_minus, learning_rounds):
         super().__init__(layer_pre, win, stride, map_num, threshold)
@@ -187,7 +187,8 @@ class LayerConv(LayerNonInput):
                 t, self.layer_pre.layer_size, self.layer_size,
                 self.spike_count, self.spikes, self.layer_pre.fired,
                 self.g, self.weights, self.winners_intramap, self.plastic,
-                self.a_plus, self.a_minus, self.map_size,
+                self.a_plus, self.a_minus,
+                self.map_num, self.map_size, self.width, self.sec_num, self.sec_size,
                 block=(block_size,1,1), grid=(grid_size,1))
 
     def step_neurons(self, t):
@@ -225,10 +226,10 @@ class LayerConv(LayerNonInput):
             return
 
         # stdp inhibition
-        grid_size = int((self.map_num + block_size - 1) // block_size)
+        grid_size = int((self.sec_num * self.map_num + block_size - 1) // block_size)
         self.disallow_nearby_stdp(
                 self.winners_intramap, self.allow_stdp_map, self.allow_stdp_loc,
-                self.map_num, self.map_size, self.width, self.height, np.int32(self.win_width), # must be called before winners(V)_intramap are reset
+                self.map_num, self.map_size, self.width, self.sec_num, self.sec_size, np.int32(self.win_width), # must be called before winners(V)_intramap are reset
                 block=(block_size,1,1), grid=(grid_size,1))
 
         self.winners_intramap.fill(-1)
@@ -238,13 +239,8 @@ class LayerConv(LayerNonInput):
         self.get_intramap_stdp_winners(
                 self.spikes, self.spike_count, self.V,
                 self.winners_intramap, self.winnersV_intramap, self.allow_stdp_map, self.allow_stdp_loc, self.mutex,
-                self.map_size,
+                self.map_num, self.map_size, self.width, self.sec_num, self.sec_size,
                 block=(block_size,1,1), grid=(grid_size,1))
-        # grid_size = int((self.map_num + block_size - 1) // block_size)
-        # self.get_intermap_stdp_winners(
-        #         self.winners_intramap, self.winnersV_intramap,
-        #         self.map_num, self.map_size, self.width, np.int32(self.win_width),
-        #         block=(block_size,1,1), grid=(grid_size,1))
 
         def is_near(a, b, l):
             ra = a % self.map_size // self.width
@@ -266,7 +262,10 @@ class LayerConv(LayerNonInput):
             new_winnersV_intramap[i] = winnersV_intramap[i]
 
             for j in winnersV_intramap.nonzero()[0]:
-                if i != j and is_near(winners_intramap[i], winners_intramap[j], self.win_width) and winnersV_intramap[i] > winnersV_intramap[j]:
+                if i != j \
+                        and i // self.map_num == j // self.map_num \
+                        and is_near(winners_intramap[i], winners_intramap[j], self.win_height) \
+                        and winnersV_intramap[i] > winnersV_intramap[j]:
                     winners_intramap[j] = -1
                     winnersV_intramap[j] = 0
             winners_intramap[i] = -1

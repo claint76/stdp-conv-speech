@@ -47,20 +47,22 @@ __global__ void clean_spikes(
 __global__ void get_intramap_stdp_winners(
         int *glbSpk, int *glbSpkCnt, float *V,
         int *winners_intramap, float *winnersV_intramap, bool *allow_stdp_map, bool *allow_stdp_loc, int *mutex,
-        int map_size)
+        int map_num, int map_size, int width, int sec_num, int sec_size)
 {
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
     if (tid < glbSpkCnt[0]) {
         int id = glbSpk[tid];
+        int sec = id % map_size / width / sec_size;
+        int map = id / map_size;
 
-        if (allow_stdp_map[id / map_size] && allow_stdp_loc[id % map_size]) {
+        if (allow_stdp_map[sec * map_num + map] && allow_stdp_loc[id % map_size]) {
             bool need_lock = true;
             while (need_lock) {
                 if (atomicCAS(mutex, 0, 1) == 0) {
                     // critical section
-                    if (V[id] > winnersV_intramap[id / map_size]) {
-                        winnersV_intramap[id / map_size] = V[id];
-                        winners_intramap[id / map_size] = id;
+                    if (V[id] > winnersV_intramap[sec * map_num + map]) {
+                        winnersV_intramap[sec * map_num + map] = V[id];
+                        winners_intramap[sec * map_num + map] = id;
                     }
                     // end critical section
                     atomicExch(mutex, 0);
@@ -72,58 +74,25 @@ __global__ void get_intramap_stdp_winners(
 }
 
 
-// eliminate winners which are near to a stronger winner in other maps
-__global__ void get_intermap_stdp_winners(
-        int *winners_intramap, float *winnersV_intramap,
-        int map_num, int map_size, int width, int radius)
-{
-    int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    if (tid < map_num) {
-        int map = tid;
-
-        int id = winners_intramap[map];
-        if (id != -1) {
-            int r = id % map_size / width;
-            int c = id % map_size % width;
-            int l = radius;
-
-            for (int i = 0; i < map_num; i++) {
-                int id2 = winners_intramap[i];
-                if (id2 != -1) {
-                    int r2 = id2 % map_size / width;
-                    int c2 = id2 % map_size % width;
-
-                    if (map != i && winnersV_intramap[map] < winnersV_intramap[i]
-                            && r >= r2 - l && r <= r2 + l && c >= c2 - l && c <= c2 + l) {
-                        winners_intramap[map] = -1;
-                        winnersV_intramap[map] = 0;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-}
-
-
 // set allow_stdp_map and allow_stdp_loc
 __global__ void disallow_nearby_stdp(
         int *winners_intramap, bool *allow_stdp_map, bool *allow_stdp_loc,
-        int map_num, int map_size, int width, int height, int radius)
+        int map_num, int map_size, int width, int sec_num, int sec_size, int radius)
 {
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    if (tid < map_num) {
-        int map = tid;
+    if (tid < sec_num * map_num) {
+        int sec = tid / map_num;
+        int map = tid % map_num;
 
-        if (winners_intramap[map] != -1) {
-            int id = winners_intramap[map];
+        if (winners_intramap[sec * map_num + map] != -1) {
+            int id = winners_intramap[sec * map_num + map];
             int r = id % map_size / width;
             int c = id % map_size % width;
             int l = radius;
 
-            allow_stdp_map[map] = false;
+            allow_stdp_map[sec * map_num + map] = false;
 
-            for (int i = (r-l < 0 ? 0 : r-l); i <= (r+l > height-1 ? height-1 : r+l); i++)
+            for (int i = (r-l < sec*sec_size ? sec*sec_size : r-l); i <= (r+l > (sec+1)*sec_size-1 ? (sec+1)*sec_size-1 : r+l); i++)
                 for (int j = (c-l < 0 ? 0 : c-l); j <= (c+l > width-1 ? width-1 : c+l); j++)
                     allow_stdp_loc[i * width + j] = false;
         }

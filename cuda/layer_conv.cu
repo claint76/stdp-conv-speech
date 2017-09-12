@@ -83,7 +83,8 @@ __global__ void learnSynapsesPost(
         float t, int layer_size_pre, int layer_size_post,
         int *spike_count_post, int *spikes_post, bool *fired_pre,
         int *g, float *weights, int *winners_intramap, bool *plastic,
-        float a_plus, float a_minus, int map_size)
+        float a_plus, float a_minus,
+        int map_num, int map_size, int width, int sec_num, int sec_size)
 {
     int id_pre = BLOCK_SIZE * blockIdx.x + threadIdx.x;
     __shared__ int shared_spikes[BLOCK_SIZE];
@@ -111,7 +112,10 @@ __global__ void learnSynapsesPost(
                     float *pw = weights + g[id_pre * layer_size_post + id_post];
                     float w = *pw;
 
-                    if (winners_intramap[id_post / map_size] == id_post) { // if post-neuron is winner of current map
+                    int sec = id_post % map_size / width / sec_size;
+                    int map = id_post / map_size;
+
+                    if (winners_intramap[sec * map_num + map] == id_post) { // if post-neuron is winner of current map
                         if (fired_pre[id_pre])
                             atomicAdd(pw, a_plus * w * (1 - w));
                         else

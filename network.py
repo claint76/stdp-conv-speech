@@ -26,6 +26,7 @@ class Network:
                     layer_param['stride'],
                     layer_param['map_num'],
                     layer_param['sec_num'],
+                    layer_param['inh_radius'],
                     layer_param['threshold'],
                     layer_param['a_plus'],
                     layer_param['a_minus'],

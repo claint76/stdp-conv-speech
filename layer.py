@@ -94,11 +94,12 @@ class LayerConv(LayerNonInput):
     get_intermap_firing_winners, clean_spikes, disallow_nearby_stdp, get_intramap_stdp_winners = \
             get_kernels('inhibition.cu', ['get_intermap_firing_winners', 'clean_spikes', 'disallow_nearby_stdp', 'get_intramap_stdp_winners'])
 
-    def __init__(self, layer_pre, win, stride, map_num, sec_num, threshold, a_plus, a_minus, learning_rounds):
+    def __init__(self, layer_pre, win, stride, map_num, sec_num, inh_radius, threshold, a_plus, a_minus, learning_rounds):
         super().__init__(layer_pre, win, stride, map_num, threshold)
         self.weight_size = np.int32(self.layer_pre.map_num * self.win_size)
         self.sec_num = np.int32(sec_num)
         self.sec_size = np.int32(self.height // self.sec_num)
+        self.inh_radius = np.int32(inh_radius)
         self.a_plus = np.float32(a_plus)
         self.a_minus = np.float32(a_minus)
         self.learning_rounds = learning_rounds
@@ -226,7 +227,7 @@ class LayerConv(LayerNonInput):
         grid_size = int((self.sec_num * self.map_num + block_size - 1) // block_size)
         self.disallow_nearby_stdp(
                 self.winners_intramap, self.allow_stdp_map, self.allow_stdp_loc,
-                self.map_num, self.map_size, self.width, self.sec_num, self.sec_size, np.int32(self.win_width), # must be called before winners(V)_intramap are reset
+                self.map_num, self.map_size, self.width, self.sec_num, self.sec_size, np.int32(self.inh_radius), # must be called before winners(V)_intramap are reset
                 block=(block_size,1,1), grid=(grid_size,1))
 
         self.winners_intramap.fill(-1)
@@ -261,7 +262,7 @@ class LayerConv(LayerNonInput):
             for j in winnersV_intramap.nonzero()[0]:
                 if i != j \
                         and i // self.map_num == j // self.map_num \
-                        and is_near(winners_intramap[i], winners_intramap[j], self.win_height) \
+                        and is_near(winners_intramap[i], winners_intramap[j], self.inh_radius) \
                         and winnersV_intramap[i] > winnersV_intramap[j]:
                     winners_intramap[j] = -1
                     winnersV_intramap[j] = 0

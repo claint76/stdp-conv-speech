@@ -12,6 +12,7 @@
             "win": [5, 40],
             "stride": 1,
             "sec_num": 6,
+            "inh_radius": 5,
             "threshold": 15,
             "a_plus": 0.004,
             "a_minus": 0.003,

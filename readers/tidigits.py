@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 
 def read_data():
-    n_bands = 30
+    n_bands = 34
     n_frames = 40
     overlap = 0.5
 

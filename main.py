@@ -21,6 +21,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('params_file')
 parser.add_argument('-s', '--stage', choices=['train', 'test'])
 parser.add_argument('-l', '--train_from_layer', type=int)
+parser.add_argument('--noprogress', action='store_true')
 args = parser.parse_args()
 
 
@@ -95,7 +96,8 @@ def run(data_set, output=None, learning_round=None):
             network.layers[-1].V.get(output[0][k])
             output[1][k] = data_set[1][k]
 
-        print_progress((k + 1) / data_set[1].size)
+        if not args.noprogress:
+            print_progress((k + 1) / data_set[1].size)
 
 
 if to_train:

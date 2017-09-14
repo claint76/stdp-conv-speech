@@ -6,7 +6,6 @@ import scipy.io.wavfile as wav
 from sklearn.preprocessing import normalize
 import os
 import pickle
-import matplotlib.pyplot as plt
 
 
 def read_data():

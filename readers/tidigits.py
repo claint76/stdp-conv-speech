@@ -3,6 +3,7 @@
 from python_speech_features import fbank
 import numpy as np
 import scipy.io.wavfile as wav
+from sklearn.preprocessing import normalize
 import os
 import pickle
 import matplotlib.pyplot as plt
@@ -50,6 +51,8 @@ def read_data():
             feat = np.log(feat)
 
             feats[i] = feat[:n_frames].flatten() # feat may have 40 or 41 frames
+
+        feats = normalize(feats, norm='l2', axis=1)
 
         p = np.random.permutation(n_samples)
         feats, labels = feats[p], labels[p]

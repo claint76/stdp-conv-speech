@@ -8,12 +8,10 @@ import os
 import pickle
 
 
-def read_data():
-    n_bands = 34
-    n_frames = 40
+def read_data(n_bands, n_frames):
     overlap = 0.5
 
-    tidigits_file = 'data/tidigits/tidigits.pickle'
+    tidigits_file = 'data/tidigits/tidigits_{}_{}.pickle'.format(n_bands, n_frames)
 
     if os.path.isfile(tidigits_file):
         print('Reading {}...'.format(tidigits_file))

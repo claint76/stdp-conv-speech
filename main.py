@@ -43,13 +43,16 @@ else:
 weights_path = 'output/weights_layer_{}.pickle'
 
 
+with open(args.params_file) as f:
+    params = json.load(f)
+    params['layers'][0]['height'] = params['layers'][1]['sec_num'] * params['layers'][1]['sec_size'] + params['layers'][1]['win'][0] - 1
+
+
 print('Reading data...')
-train_set, test_set = read_data()
+train_set, test_set = read_data(params['layers'][0]['height'], params['layers'][0]['width'])
 
 
 print('Creating network...')
-with open(args.params_file) as f:
-    params = json.load(f)
 network = Network(params)
 
 

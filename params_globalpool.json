@@ -3,7 +3,6 @@
         {
             "type": "input",
             "width": 40,
-            "height": 34,
             "map_num": 1
         },
         {
@@ -12,6 +11,7 @@
             "win": [5, 40],
             "stride": 1,
             "sec_num": 6,
+            "sec_size": 5,
             "inh_radius": 5,
             "threshold": 15,
             "a_plus": 0.004,

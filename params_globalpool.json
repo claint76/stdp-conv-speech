@@ -8,12 +8,12 @@
         {
             "type": "conv",
             "map_num": 30,
-            "win": [5, 40],
+            "win": [6, 40],
             "stride": 1,
-            "sec_num": 6,
-            "sec_size": 5,
-            "inh_radius": 5,
-            "threshold": 15,
+            "sec_num": 9,
+            "sec_size": 4,
+            "inh_radius": 1,
+            "threshold": 23,
             "a_plus": 0.004,
             "a_minus": 0.003,
             "learning_rounds": 10

@@ -54,8 +54,10 @@ def read_data(n_bands, n_frames):
         p = np.random.permutation(n_samples)
         feats, labels = feats[p], labels[p]
 
-        train_set = (feats[:n_samples//2], labels[:n_samples//2])
-        test_set = (feats[n_samples//2:], labels[n_samples//2:])
+        n_train_samples = int(n_samples * 0.7)
+
+        train_set = (feats[:n_train_samples], labels[:n_train_samples])
+        test_set = (feats[n_train_samples:], labels[n_train_samples:])
 
         with open(tidigits_file, 'wb') as f:
             pickle.dump((train_set, test_set), f)

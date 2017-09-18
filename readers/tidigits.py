@@ -19,7 +19,7 @@ def read_data(n_bands, n_frames):
             train_set, test_set = pickle.load(f)
     else:
         filelist = []
-        for root, dirs, files in os.walk('data/tidigits/MAN'):
+        for root, dirs, files in os.walk('data/tidigits'):
             for file in files:
                 if file.endswith('.waV') and file[0] != 'O':
                     filelist.append(os.path.join(root, file))

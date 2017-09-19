@@ -136,12 +136,12 @@ class LayerConv(LayerNonInput):
         self.allow_stdp_loc.fill(True)
 
     def generate_connections(self):
-        g_file = '/tmp/g_{}_{}_{}_{}_{}_{}.pickle'.format(self.layer_pre.width, self.layer_pre.height, self.layer_pre.map_num, self.win_width, self.win_height, self.stride)
-        if os.path.isfile(g_file):
-            with open(g_file, 'rb') as f:
-                g_host = pickle.load(f)
-                self.g.set(g_host)
-                return
+        # g_file = '/tmp/g_{}_{}_{}_{}_{}_{}.pickle'.format(self.layer_pre.width, self.layer_pre.height, self.layer_pre.map_num, self.win_width, self.win_height, self.stride)
+        # if os.path.isfile(g_file):
+        #     with open(g_file, 'rb') as f:
+        #         g_host = pickle.load(f)
+        #         self.g.set(g_host)
+        #         return
 
         g_host = self.g.get()
         g_host.fill(-1)
@@ -168,8 +168,8 @@ class LayerConv(LayerNonInput):
                         g_host[gid] = sec * self.map_num * self.weight_size + map_post * self.weight_size + map_pre * self.win_size + i # limited shared weights
         self.g.set(g_host)
 
-        with open(g_file, 'wb') as f:
-            pickle.dump(g_host, f)
+        # with open(g_file, 'wb') as f:
+        #     pickle.dump(g_host, f)
 
     def step_synapses(self, t):
         grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int
@@ -285,12 +285,12 @@ class LayerPool(LayerNonInput):
         self.reset()
 
     def generate_connections(self):
-        g_file = '/tmp/g_{}_{}_{}_{}_{}_{}.pickle'.format(self.layer_pre.width, self.layer_pre.height, self.layer_pre.map_num, self.win_width, self.win_height, self.stride)
-        if os.path.isfile(g_file):
-            with open(g_file, 'rb') as f:
-                g_host = pickle.load(f)
-                self.g.set(g_host)
-                return
+        # g_file = '/tmp/g_{}_{}_{}_{}_{}_{}.pickle'.format(self.layer_pre.width, self.layer_pre.height, self.layer_pre.map_num, self.win_width, self.win_height, self.stride)
+        # if os.path.isfile(g_file):
+        #     with open(g_file, 'rb') as f:
+        #         g_host = pickle.load(f)
+        #         self.g.set(g_host)
+        #         return
 
         g_host = self.g.get()
         g_host.fill(0)
@@ -314,8 +314,8 @@ class LayerPool(LayerNonInput):
                     g_host[gid] = 1
         self.g.set(g_host)
 
-        with open(g_file, 'wb') as f:
-            pickle.dump(g_host, f)
+        # with open(g_file, 'wb') as f:
+        #     pickle.dump(g_host, f)
 
     def step_synapses(self, t):
         grid_size = int((self.layer_size + block_size - 1) // block_size) # must be converted to int

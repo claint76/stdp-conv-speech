@@ -5,5 +5,5 @@ __pycache__
 data/**/*.gz
 data/**/*ubyte*
 data/**/*.jpg
-data/**/*.waV
+data/**/*.wav
 data/**/*.zip

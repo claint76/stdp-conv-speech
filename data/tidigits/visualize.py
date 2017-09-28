@@ -33,7 +33,7 @@ for i, file in enumerate(filelist):
     winlen = duration / (n_frames * (1 - overlap) + overlap)
     winstep = winlen * (1 - overlap)
     feat, energy = fbank(sig, rate, winlen, winstep, nfilt=n_bands, nfft=4096, winfunc=np.hamming)
-    feat = np.log(feat)
+    feat = np.log(feat).transpose()
     plt.subplot(131)
     plt.imshow(feat)
 

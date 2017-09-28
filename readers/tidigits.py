@@ -21,7 +21,7 @@ def read_data(n_bands, n_frames):
     filelist = []
     for root, dirs, files in os.walk('data/tidigits'):
         for file in files:
-            if file.endswith('.waV') and file[0] != 'O':
+            if file.endswith('.wav') and file[0] != 'O':
                 filelist.append(os.path.join(root, file))
     n_samples = len(filelist)
 

@@ -17,7 +17,7 @@ overlap = 0.5
 filelist = []
 for root, dirs, files in os.walk('.'):
     for file in files:
-        if file.endswith('.waV') and file[0] != 'O':
+        if file.endswith('.wav') and file[0] != 'O':
             filelist.append(os.path.join(root, file))
 n_samples = len(filelist)
 
@@ -32,7 +32,7 @@ for i, file in enumerate(filelist):
     duration = sig.size / rate
     winlen = duration / (n_frames * (1 - overlap) + overlap)
     winstep = winlen * (1 - overlap)
-    feat, energy = fbank(sig, rate, winlen, winstep, nfilt=n_bands, nfft=4096, winfunc=np.hamming)
+    feat, energy = fbank(sig, rate, winlen, winstep, nfilt=n_bands, nfft=1024, winfunc=np.hamming)
     feat = np.log(feat).transpose()
     plt.subplot(131)
     plt.imshow(feat)

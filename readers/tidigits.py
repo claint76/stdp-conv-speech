@@ -47,7 +47,7 @@ def read_data(n_bands, n_frames):
         feat, energy = fbank(sig, rate, winlen, winstep, nfilt=n_bands, nfft=4096, winfunc=np.hamming)
         feat = np.log(feat)
 
-        feats[i] = feat[:n_frames].flatten() # feat may have 40 or 41 frames
+        feats[i] = feat[:n_frames].flatten() # feat may have 41 or 42 frames
 
     feats = normalize(feats, norm='l2', axis=1)
 

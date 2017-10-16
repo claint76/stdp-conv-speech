@@ -51,6 +51,7 @@ def read_data(n_bands, n_frames):
 
     feats = normalize(feats, norm='l2', axis=1)
 
+    np.random.seed(42)
     p = np.random.permutation(n_samples)
     feats, labels = feats[p], labels[p]
 

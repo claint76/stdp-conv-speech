@@ -34,18 +34,21 @@ for i, file in enumerate(filelist):
     winstep = winlen * (1 - overlap)
     feat, energy = fbank(sig, rate, winlen, winstep, nfilt=n_bands, nfft=4096, winfunc=np.hamming)
     feat = np.log(feat)
-    plt.subplot(131)
+    feat = feat.transpose()
+
+    # plt.subplot(131)
     plt.imshow(feat)
+    plt.axis('off')
 
-    feat2 = feat.copy()
-    feat2[feat2 < 4] = 0
-    plt.subplot(132)
-    plt.imshow(feat2)
+    # feat2 = feat.copy()
+    # feat2[feat2 < 4] = 0
+    # plt.subplot(132)
+    # plt.imshow(feat2)
 
-    feat3 = dct(feat, type=2, axis=1, norm='ortho')#[:,:n_bands//2]
-    feat3[:,n_bands//2:] = 0
-    feat3 = idct(feat3, type=2, axis=1, norm='ortho')
-    plt.subplot(133)
-    plt.imshow(feat3)
+    # feat3 = dct(feat, type=2, axis=1, norm='ortho')#[:,:n_bands//2]
+    # feat3[:,n_bands//2:] = 0
+    # feat3 = idct(feat3, type=2, axis=1, norm='ortho')
+    # plt.subplot(133)
+    # plt.imshow(feat3)
 
     plt.show()

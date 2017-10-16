@@ -8,6 +8,7 @@ import sys
 import time
 from datetime import timedelta
 from sklearn import svm
+from sklearn.metrics import confusion_matrix
 
 import pycuda.driver as cuda
 import pycuda.autoinit
@@ -173,6 +174,10 @@ if to_test:
         clf.fit(train_output[0], train_output[1])
         accuracy = clf.score(test_output[0], test_output[1])
         print('Accuracy:', accuracy * 100)
+
+        cm = confusion_matrix(test_output[1], clf.predict(test_output[0]))
+        with open('output/confusion_matrix.pickle', 'wb') as f:
+            pickle.dump(cm, f)
 
         seconds = time.time() - start_time
         print('SVM time: {:02.0f}:{:02.0f}'.format(seconds // 3600, seconds // 60 % 60))

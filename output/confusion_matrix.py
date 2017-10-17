@@ -18,12 +18,12 @@ plt.yticks(tick_marks, classes)
 plt.ylabel('True class')
 plt.xlabel('Predicted class')
 
-thresh = cm.max() / 2.
-for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-    plt.text(j, i, cm[i, j],
-             horizontalalignment='center',
-             verticalalignment='center',
-             color='white' if cm[i, j] > thresh else 'black')
+# thresh = cm.max() / 2.
+# for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+#     plt.text(j, i, cm[i, j],
+#              horizontalalignment='center',
+#              verticalalignment='center',
+#              color='white' if cm[i, j] > thresh else 'black')
 
 plt.show()
 

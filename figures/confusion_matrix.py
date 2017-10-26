@@ -10,7 +10,6 @@ classes = list(range(10))
 
 plt.figure()
 plt.imshow(cm, interpolation='nearest', cmap=plt.cm.coolwarm)
-plt.title('Confusion matrix')
 plt.colorbar()
 tick_marks = np.arange(len(classes))
 plt.xticks(tick_marks, classes)

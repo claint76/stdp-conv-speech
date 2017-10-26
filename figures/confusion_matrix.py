@@ -4,7 +4,7 @@ import pickle
 import matplotlib.pyplot as plt
 
 
-with open('confusion_matrix.pickle', 'rb') as f:
+with open('../output/confusion_matrix.pickle', 'rb') as f:
     cm = pickle.load(f)
 classes = list(range(10))
 

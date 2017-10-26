@@ -1,6 +1,7 @@
 *.pyc
 __pycache__
 *.pickle
+*.tiff
 
 data/**/*.gz
 data/**/*ubyte*

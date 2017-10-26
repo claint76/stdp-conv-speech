@@ -8,7 +8,7 @@ import os
 import pickle
 
 
-def read_data(n_bands, n_frames):
+def read_data(path, n_bands, n_frames):
     overlap = 0.5
 
     # tidigits_file = 'data/tidigits/tidigits_{}_{}.pickle'.format(n_bands, n_frames)
@@ -19,7 +19,7 @@ def read_data(n_bands, n_frames):
     #     return train_set, test_set
 
     filelist = []
-    for root, dirs, files in os.walk('data/tidigits'):
+    for root, dirs, files in os.walk(path):
         for file in files:
             if file.endswith('.waV') and file[0] != 'O':
                 filelist.append(os.path.join(root, file))

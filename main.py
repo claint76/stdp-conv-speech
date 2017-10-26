@@ -50,7 +50,7 @@ with open(args.params_file) as f:
 
 
 print('Reading data...')
-train_set, test_set = read_data(n_bands=params['layers'][0]['width'], n_frames=params['layers'][0]['height'])
+train_set, test_set = read_data(path='data/tidigits', n_bands=params['layers'][0]['width'], n_frames=params['layers'][0]['height'])
 
 
 print('Creating network...')

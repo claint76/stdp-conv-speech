@@ -9,7 +9,7 @@ with open('../output/confusion_matrix.pickle', 'rb') as f:
 classes = list(range(10))
 
 plt.figure()
-plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+plt.imshow(cm, interpolation='nearest', cmap=plt.cm.coolwarm)
 plt.title('Confusion matrix')
 plt.colorbar()
 tick_marks = np.arange(len(classes))
@@ -25,6 +25,6 @@ plt.xlabel('Predicted class')
 #              verticalalignment='center',
 #              color='white' if cm[i, j] > thresh else 'black')
 
-fig.savefig('confusion_matrix.tiff')
+plt.savefig('confusion_matrix.tiff')
 plt.show()
 

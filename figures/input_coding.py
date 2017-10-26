@@ -55,5 +55,5 @@ axes[1].set_ylabel('Frequency bands')
 axes[1].set_xlabel('Time frames')
 
 fig.tight_layout()
-fig.savefig('input_coding.tiff', dpi=300)
+fig.savefig('input_coding.tiff')
 plt.show()

@@ -25,5 +25,6 @@ plt.xlabel('Predicted class')
 #              verticalalignment='center',
 #              color='white' if cm[i, j] > thresh else 'black')
 
+fig.savefig('confusion_matrix.tiff')
 plt.show()
 

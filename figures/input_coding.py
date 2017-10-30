@@ -15,9 +15,11 @@ with open('../params_globalpool.json') as f:
     params = json.load(f)
     params['layers'][0]['height'] = params['layers'][1]['sec_num'] * params['layers'][1]['sec_size'] + params['layers'][1]['win'][0] - 1
 
+n_bands = params['layers'][0]['width']
+n_frames = params['layers'][0]['height']
 
 print('Reading data...')
-train_set, test_set = read_data(path='../data/tidigits', n_bands=params['layers'][0]['width'], n_frames=params['layers'][0]['height'])
+train_set, test_set = read_data(path='../data/tidigits', n_bands=n_bands, n_frames=n_frames)
 
 d = train_set[0][0]
 n = np.count_nonzero(d)
@@ -30,27 +32,29 @@ t[indices[:n]] = np.repeat(np.arange(packet_count), spikes_per_packet)[:n]
 t[indices[n:]] = np.inf
 
 
-d = d.reshape((41, 40))
+d = d.reshape((n_frames, n_bands))
 d = d.transpose()
-t = t.reshape((41, 40))
+t = t.reshape((n_frames, n_bands))
 t = t.transpose()
 
 # plotting
-fig, axes = plt.subplots(1, 2, sharey=True, figsize=(5.2, 3.2))
+fig, axes = plt.subplots(1, 2, sharey=True, figsize=(5.2, 2.64))
 
 axes[0].imshow(d, origin='lower')
 axes[0].add_patch(
     patches.Rectangle(
         (12.6, -0.4),
         1,
-        40,
+        n_bands,
         fill=False
     )
 )
 axes[0].set_ylabel('Frequency bands')
 axes[0].set_xlabel('Time frames')
+axes[0].set_ylim(0, n_bands-1)
+axes[0].set_xlim(0, n_frames-1)
 
-axes[1].scatter(t[:,13], np.arange(40), s=10)
+axes[1].scatter(t[:,13], np.arange(n_bands), s=5)
 axes[1].set_ylabel('Frequency bands')
 axes[1].set_xlabel('Time frames')
 

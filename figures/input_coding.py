@@ -38,12 +38,12 @@ t = t.reshape((n_frames, n_bands))
 t = t.transpose()
 
 # plotting
-fig, axes = plt.subplots(1, 2, sharey=True, figsize=(5.2, 2.64))
+fig, axes = plt.subplots(1, 2, sharey=True, figsize=(5.2, 2.69))
 
 axes[0].imshow(d, origin='lower')
 axes[0].add_patch(
     patches.Rectangle(
-        (12.6, -0.4),
+        (17.5, -0.5),
         1,
         n_bands,
         fill=False
@@ -51,10 +51,10 @@ axes[0].add_patch(
 )
 axes[0].set_ylabel('Frequency bands')
 axes[0].set_xlabel('Time frames')
-axes[0].set_ylim(0, n_bands-1)
-axes[0].set_xlim(0, n_frames-1)
+axes[0].set_ylim(-0.5, n_bands-1+0.5)
+axes[0].set_xlim(-0.5, n_frames-1+0.5)
 
-axes[1].scatter(t[:,13], np.arange(n_bands), s=5)
+axes[1].scatter(t[:,18], np.arange(n_bands), s=5)
 axes[1].set_ylabel('Frequency bands')
 axes[1].set_xlabel('Time frames')
 

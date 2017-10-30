@@ -8,7 +8,7 @@ with open('../output/confusion_matrix.pickle', 'rb') as f:
     cm = pickle.load(f)
 classes = list(range(10))
 
-plt.figure()
+plt.figure(figsize=(5.2, 3.2))
 plt.imshow(cm, interpolation='nearest', cmap=plt.cm.coolwarm)
 plt.colorbar()
 tick_marks = np.arange(len(classes))

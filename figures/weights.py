@@ -17,7 +17,7 @@ with open('../output/weights_layer_1.pickle', 'rb') as f:
     w = pickle.load(f)
 w = w.reshape((params['layers'][1]['sec_num'], params['layers'][1]['map_num'], params['layers'][1]['win'][0], params['layers'][1]['win'][1]))
 
-plt.figure()
+plt.figure(figsize=(5.2, 3.5))
 for j in range(params['layers'][1]['map_num']):
     plt.subplot(rows, cols, j+1)
     plt.axis('off')

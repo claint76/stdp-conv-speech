@@ -60,4 +60,5 @@ axes[1].set_xlabel('Time frames')
 
 fig.tight_layout()
 fig.savefig('input_coding.tiff')
+fig.savefig('input_coding.png')
 plt.show()

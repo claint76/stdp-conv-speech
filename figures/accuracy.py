@@ -11,4 +11,5 @@ plt.ylabel('Accuracy')
 plt.tight_layout()
 
 plt.savefig('accuracy.tiff')
+plt.savefig('accuracy.png')
 plt.show()

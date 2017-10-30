@@ -24,4 +24,5 @@ for j in range(params['layers'][1]['map_num']):
     plt.imshow(w[5][j], interpolation="nearest", vmin=0, vmax=1)
 
 plt.savefig('weights.tiff')
+plt.savefig('weights.png')
 plt.show()

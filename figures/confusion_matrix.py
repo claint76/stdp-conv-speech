@@ -16,6 +16,7 @@ plt.xticks(tick_marks, classes)
 plt.yticks(tick_marks, classes)
 plt.ylabel('True class')
 plt.xlabel('Predicted class')
+plt.tight_layout()
 
 # thresh = cm.max() / 2.
 # for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):

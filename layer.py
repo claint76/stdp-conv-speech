@@ -261,7 +261,7 @@ class LayerConv(LayerNonInput):
 
             for j in winnersV_intramap.nonzero()[0]:
                 if i != j \
-                        and i // self.map_num == j // self.map_num \
+                        and (i // self.map_num) == (j // self.map_num) \ # if in same section
                         and is_near(winners_intramap[i], winners_intramap[j], self.inh_radius) \
                         and winnersV_intramap[i] > winnersV_intramap[j]:
                     winners_intramap[j] = -1

@@ -16,7 +16,7 @@
             "threshold": 23,
             "a_plus": 0.004,
             "a_minus": 0.003,
-            "learning_rounds": 10
+            "learning_rounds": 3
         },
         {
             "type": "globalpool"

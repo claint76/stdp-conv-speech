@@ -10,6 +10,5 @@ plt.xlabel('Number of training samples')
 plt.ylabel('Accuracy')
 plt.tight_layout()
 
-plt.savefig('accuracy.tiff')
 plt.savefig('accuracy.png')
 plt.show()

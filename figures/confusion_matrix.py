@@ -25,7 +25,6 @@ plt.tight_layout()
 #              verticalalignment='center',
 #              color='white' if cm[i, j] > thresh else 'black')
 
-plt.savefig('confusion_matrix.tiff')
 plt.savefig('confusion_matrix.png')
 plt.show()
 

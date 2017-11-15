@@ -3,6 +3,7 @@ __pycache__
 *.pickle
 *.tiff
 *.png
+*.txt
 
 data/**/*.gz
 data/**/*ubyte*

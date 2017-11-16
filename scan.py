@@ -1,7 +1,7 @@
 import json
 import subprocess
 
-with open('params_globalpool.json') as f:
+with open('params.json') as f:
     params = json.load(f)
 
 win_height = 7
@@ -15,9 +15,9 @@ for sec_num in range(7, 11):
             params['layers'][1]['inh_radius'] = inh_radius
             params['layers'][1]['threshold'] = threshold
 
-            with open('params_globalpool.json', 'w') as f:
+            with open('params.json', 'w') as f:
                 json.dump(params, f)
 
-            subprocess.run(['python', '-u', 'main.py', 'params_globalpool.json', '--noprogress'])
+            subprocess.run(['python', '-u', 'main.py', 'params.json', '--noprogress'])
             print('win_height =', win_height, 'sec_num =', sec_num, 'sec_size =', sec_size, 'inh_radius =', inh_radius, 'threshold =', threshold)
             print()

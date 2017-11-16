@@ -11,7 +11,7 @@ sys.path.append('..')
 from readers.tidigits import read_data
 
 
-with open('../params_globalpool.json') as f:
+with open('../params.json') as f:
     params = json.load(f)
     params['layers'][0]['height'] = params['layers'][1]['sec_num'] * params['layers'][1]['sec_size'] + params['layers'][1]['win'][0] - 1
 

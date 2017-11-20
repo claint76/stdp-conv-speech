@@ -56,7 +56,7 @@ axes[0].set_xlim(-0.5, n_frames-1+0.5)
 
 axes[1].scatter(t[:,18], np.arange(n_bands), s=5)
 axes[1].set_ylabel('Frequency bands')
-axes[1].set_xlabel('Time frames')
+axes[1].set_xlabel('Time steps')
 
 fig.tight_layout()
 fig.savefig('input_coding.png')

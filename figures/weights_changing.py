@@ -2,6 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.image as image
 import json
 import pickle
 
@@ -24,6 +25,13 @@ for i in range(n):
     axes[2, i].axis('off')
     axes[2, i].imshow(w[5][34].transpose(), interpolation="nearest", vmin=0, vmax=1)
     # axes[2, i].text(0, 43, i * 2000)
+
+fig.tight_layout(pad=0)
+fig.savefig('weights_changing.png')
+img = image.imread('weights_changing.png')
+
+plt.figure()
+plt.imshow(img)
 
 fig.savefig('weights_changing.png')
 plt.show()

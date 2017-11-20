@@ -11,7 +11,7 @@ with open('../params.json') as f:
 
 m = 3  # features
 n = 12 # time points
-fig, axes = plt.subplots(m, n, figsize=(5, 5.5))
+fig, axes = plt.subplots(m, n, figsize=(4.5, 4.5))
 
 for i in range(n):
     with open('../output/weights_layer_1_{}.pickle'.format(i * 2000), 'rb') as f:

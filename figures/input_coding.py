@@ -50,7 +50,7 @@ axes[0].add_patch(
     )
 )
 axes[0].set_ylabel('Frequency bands')
-axes[0].set_xlabel('Time frames')
+axes[0].set_xlabel('Frames')
 axes[0].set_ylim(-0.5, n_bands-1+0.5)
 axes[0].set_xlim(-0.5, n_frames-1+0.5)
 

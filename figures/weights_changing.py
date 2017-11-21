@@ -42,5 +42,5 @@ axes.set_yticks([])
 axes.set_xlabel('Number of training samples')
 axes.set_ylabel('Three selected feature maps')
 
-fig.savefig('weights_changing.png')
+fig.savefig('weights_changing.png', bbox_inches='tight')
 plt.show()

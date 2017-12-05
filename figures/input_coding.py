@@ -38,7 +38,7 @@ t = t.reshape((n_frames, n_bands))
 t = t.transpose()
 
 # plotting
-fig, axes = plt.subplots(1, 2, sharey=True, figsize=(5.2, 2.97))
+fig, axes = plt.subplots(1, 2, sharey=True, figsize=(5.2, 2.81))
 
 axes[0].imshow(d, origin='lower')
 axes[0].add_patch(
@@ -53,14 +53,13 @@ axes[0].set_ylabel('Frequency bands')
 axes[0].set_xlabel('Frames')
 axes[0].set_ylim(-0.5, n_bands-1+0.5)
 axes[0].set_xlim(-0.5, n_frames-1+0.5)
-axes[0].text(-0.1, 1.1, 'A', transform=axes[0].transAxes, size=14, weight='bold')
+axes[0].text(-0.1, 1.1, 'A', horizontalalignment='center', verticalalignment='center', transform=axes[0].transAxes, size=14, weight='bold')
 
 axes[1].scatter(t[:,18], np.arange(n_bands), s=5)
-axes[1].set_ylabel('Frequency bands')
 axes[1].set_xlabel('Time steps')
-axes[1].text(-0.1, 1.1, 'B', transform=axes[1].transAxes, size=14, weight='bold')
+axes[1].text(-0.1, 1.1, 'B', horizontalalignment='center', verticalalignment='center', transform=axes[1].transAxes, size=14, weight='bold')
 
 fig.tight_layout()
-fig.subplots_adjust(top=0.85)
+fig.subplots_adjust(top=0.85, wspace=0.3)
 fig.savefig('input_coding.png')
 plt.show()

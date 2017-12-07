@@ -7,7 +7,7 @@
         },
         {
             "type": "conv",
-            "map_num": 40,
+            "map_num": 50,
             "win": [6, 40],
             "stride": 1,
             "sec_num": 9,

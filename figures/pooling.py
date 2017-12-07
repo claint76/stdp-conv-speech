@@ -14,7 +14,7 @@ for i in range(10):
     idxes = np.where(test_set[1] == i)[0]
     idx = idxes[0]
     ax = axes.ravel()[i]
-    ax.imshow(test_set[0][idx].reshape((40, 9)).transpose())
+    ax.imshow(test_set[0][idx].reshape((50, 9)).transpose())
     ax.axis('off')
     ax.set_title('Digit ' + str(i))
 

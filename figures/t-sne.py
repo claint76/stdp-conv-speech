@@ -6,6 +6,7 @@ import pickle
 import sys
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import matplotlib.cm as cm
 from sklearn.manifold import TSNE
 
 sys.path.append('..')
@@ -29,7 +30,10 @@ with open('../output/output_test_set.pickle', 'rb') as f:
 fig, axes = plt.subplots(1, 2, figsize=(5.2, 4))
 
 X_tsne = TSNE().fit_transform(test_set[0])
-axes[0].scatter(X_tsne[:, 0], X_tsne[:, 1], c=test_set[1], cmap='tab10')
+handles = []
+for i in range(10):
+    handles.append(axes[0].scatter(X_tsne[test_set[1]==i, 0], X_tsne[test_set[1]==i, 1], c=cm.tab10(i/10)))
+# axes[0].scatter(X_tsne[:, 0], X_tsne[:, 1], c=test_set[1], cmap='tab10')
 axes[0].axis('off')
 axes[0].set_title('(A) t-SNE of original data')
 
@@ -37,6 +41,8 @@ X_tsne = TSNE().fit_transform(output_test_set[0])
 axes[1].scatter(X_tsne[:, 0], X_tsne[:, 1], c=output_test_set[1], cmap='tab10')
 axes[1].axis('off')
 axes[1].set_title('(B) t-SNE of SNN output')
+
+fig.legend(handles, list(range(10)))
 
 fig.savefig('t-sne.png')
 plt.show()

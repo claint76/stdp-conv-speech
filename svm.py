@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from sklearn import svm
 from readers.tidigits import read_data

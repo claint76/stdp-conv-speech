@@ -33,13 +33,13 @@ fig, axes = plt.subplots(1, 2, figsize=(5.2, 4))
 X_tsne = TSNE(perplexity=perplexity).fit_transform(test_set[0])
 handles = []
 for i in range(10):
-    handles.append(axes[0].scatter(X_tsne[test_set[1]==i, 0], X_tsne[test_set[1]==i, 1], c=cm.tab10(i/10)))
+    handles.append(axes[0].scatter(X_tsne[test_set[1]==i, 0], X_tsne[test_set[1]==i, 1], s=15, c=cm.tab10(i/10)))
 # axes[0].scatter(X_tsne[:, 0], X_tsne[:, 1], c=test_set[1], cmap='tab10')
 axes[0].axis('off')
 axes[0].text(-0.1, 1.1, 'A', horizontalalignment='center', verticalalignment='center', transform=axes[0].transAxes, size=14, weight='bold')
 
 X_tsne = TSNE(perplexity=perplexity).fit_transform(output_test_set[0])
-axes[1].scatter(X_tsne[:, 0], X_tsne[:, 1], c=output_test_set[1], cmap='tab10')
+axes[1].scatter(X_tsne[:, 0], X_tsne[:, 1], c=output_test_set[1], s=15, cmap='tab10')
 axes[1].axis('off')
 axes[1].text(-0.1, 1.1, 'B', horizontalalignment='center', verticalalignment='center', transform=axes[1].transAxes, size=14, weight='bold')
 

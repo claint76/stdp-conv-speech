@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-x = np.loadtxt('../output/test_output')
+x = np.loadtxt('test_accuracies')
 
 plt.figure(figsize=(5.2, 3.1))
 plt.plot(x[0:1000:5,0], x[0:1000:5,1], label='SVM accuracy on SNN output')

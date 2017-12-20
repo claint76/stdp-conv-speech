@@ -33,31 +33,26 @@ t[indices[n:]] = np.inf
 
 
 d = d.reshape((n_frames, n_bands))
-d = d.transpose()
 t = t.reshape((n_frames, n_bands))
-t = t.transpose()
 
 # plotting
-fig, axes = plt.subplots(1, 2, sharey=True, figsize=(5.2, 2.81))
+fig, axes = plt.subplots(1, 2, figsize=(5.2, 2.9))
 
-axes[0].imshow(d, origin='lower')
-axes[0].add_patch(
-    patches.Rectangle(
-        (17.5, -0.5),
-        1,
-        n_bands,
-        fill=False
-    )
-)
-axes[0].set_ylabel('Frequency bands')
-axes[0].set_xlabel('Frames')
-axes[0].set_ylim(-0.5, n_bands-1+0.5)
-axes[0].set_xlim(-0.5, n_frames-1+0.5)
-axes[0].text(-0.1, 1.1, 'A', horizontalalignment='center', verticalalignment='center', transform=axes[0].transAxes, size=14, weight='bold')
+axes[0].imshow(d, extent=(0, d.shape[1], d.shape[0], 0))
+axes[0].add_patch(patches.Rectangle((0, 17), n_bands, 1, fill=False))
+axes[0].set_xlabel('Frequency bands')
+axes[0].set_ylabel('Frames')
+# axes[0].text(-0.1, 1.1, 'A', horizontalalignment='center', verticalalignment='center', transform=axes[0].transAxes, size=14, weight='bold')
 
-axes[1].scatter(t[:,18], np.arange(n_bands), s=5)
+axes[1].scatter(t[18, :], np.arange(n_bands), s=5)
 axes[1].set_xlabel('Time steps')
-axes[1].text(-0.1, 1.1, 'B', horizontalalignment='center', verticalalignment='center', transform=axes[1].transAxes, size=14, weight='bold')
+axes[1].set_ylabel('Frequency bands')
+# axes[1].text(-0.1, 1.1, 'B', horizontalalignment='center', verticalalignment='center', transform=axes[1].transAxes, size=14, weight='bold')
+
+con1 = patches.ConnectionPatch(xyA=(0, 0), xyB=(40, 18), coordsA='axes fraction', coordsB='data', axesA=axes[1], axesB=axes[0])
+con2 = patches.ConnectionPatch(xyA=(0, 1), xyB=(40, 17), coordsA='axes fraction', coordsB='data', axesA=axes[1], axesB=axes[0])
+axes[1].add_artist(con1)
+axes[1].add_artist(con2)
 
 fig.tight_layout()
 fig.subplots_adjust(top=0.85, wspace=0.3)

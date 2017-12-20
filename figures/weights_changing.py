@@ -12,35 +12,30 @@ with open('../params.json') as f:
 
 m = 3  # features
 n = 12 # time points
-fig, axes = plt.subplots(m, n, figsize=(4.5, 4.5))
+fig, axes = plt.subplots(n, m, figsize=(5.2, 4.5))
 
 for i in range(n):
     with open('../output/weights_layer_1_{}.pickle'.format(i * 2000), 'rb') as f:
         w = pickle.load(f)
-    w = w.reshape((params['layers'][1]['sec_num'], params['layers'][1]['map_num'], params['layers'][1]['win'][0], params['layers'][1]['win'][1]))
-    axes[0, i].axis('off')
-    axes[0, i].imshow(w[5][2].transpose(), interpolation="nearest", vmin=0, vmax=1)
-    axes[1, i].axis('off')
-    axes[1, i].imshow(w[5][6].transpose(), interpolation="nearest", vmin=0, vmax=1)
-    axes[2, i].axis('off')
-    axes[2, i].imshow(w[5][34].transpose(), interpolation="nearest", vmin=0, vmax=1)
-    # axes[2, i].text(0, 43, i * 2000)
+    w = w.reshape((params['layers'][1]['sec_num'], 40, params['layers'][1]['win'][0], params['layers'][1]['win'][1]))
+    axes[i, 0].axis('off')
+    axes[i, 0].imshow(w[5][2], interpolation="nearest", vmin=0, vmax=1)
+    axes[i, 1].axis('off')
+    axes[i, 1].imshow(w[5][6], interpolation="nearest", vmin=0, vmax=1)
+    axes[i, 2].axis('off')
+    axes[i, 2].imshow(w[5][34], interpolation="nearest", vmin=0, vmax=1)
 
-fig.tight_layout(pad=0)
+fig.subplots_adjust(left=0.06, right=0.94, bottom=0.05, top=0.95, wspace=0.4, hspace=0.5)
 fig.savefig('weights_changing.png')
 img = image.imread('weights_changing.png')
 
 fig, axes = plt.subplots()
 axes.imshow(img)
-axes.set_xlim([0, 1400])
-axes.set_ylim([1350, -50])
-axes.set_xticks([x for x in range(85, 1400, 112)])
-axes.set_xticklabels([x*2000 for x in range(12)], rotation=30)
-axes.set_yticks([])
-# axes.set_yticks([200, 650, 1100])
-# axes.set_yticklabels([2, 6, 34])
-axes.set_xlabel('Number of training samples')
-axes.set_ylabel('Three selected feature maps')
+axes.set_yticks([y for y in range(101, 1400, 104)])
+axes.set_yticklabels([y*2000 for y in range(12)])
+axes.set_xticks([280, 790, 1300])
+axes.set_xticklabels(['Feature map #1', 'Feature map #2', 'Feature map #3'])
+axes.set_ylabel('Number of training samples')
 
-fig.savefig('weights_changing.png', bbox_inches='tight')
+fig.savefig('weights_changing.png')
 plt.show()

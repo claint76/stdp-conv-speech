@@ -1,4 +1,3 @@
-import itertools
 import numpy as np
 import pickle
 import matplotlib.pyplot as plt
@@ -6,7 +5,7 @@ import matplotlib.pyplot as plt
 
 with open('../output/confusion_matrix.pickle', 'rb') as f:
     cm = pickle.load(f)
-cm = cm / cm.sum(axis=1)[:, np.newaxis] # normalize
+cm = cm / cm.sum(axis=1)[:, np.newaxis]  # normalize
 classes = list(range(10))
 
 plt.figure(figsize=(5.2, 3.2))
@@ -28,4 +27,3 @@ plt.tight_layout()
 
 plt.savefig('confusion_matrix.png')
 plt.show()
-

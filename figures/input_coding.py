@@ -2,13 +2,12 @@
 
 import json
 import numpy as np
-import pickle
 import sys
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 sys.path.append('..')
-from readers.tidigits import read_data
+from readers.tidigits import read_data  # noqa: E402
 
 
 with open('../params.json') as f:

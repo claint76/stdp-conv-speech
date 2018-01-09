@@ -3,10 +3,7 @@
 from python_speech_features import fbank
 import numpy as np
 import scipy.io.wavfile as wav
-from scipy.fftpack import dct, idct
-from sklearn.preprocessing import normalize
 import os
-import pickle
 import matplotlib.pyplot as plt
 
 
@@ -21,9 +18,12 @@ for root, dirs, files in os.walk('.'):
             filelist.append(os.path.join(root, file))
 n_samples = len(filelist)
 
+
 def keyfunc(x):
     s = x.split('/')
-    return (s[-1][0], s[-2], s[-1][1]) # BH/1A_endpt.wav: sort by '1', 'BH', 'A'
+    return (s[-1][0], s[-2], s[-1][1])  # BH/1A_endpt.wav: sort by '1', 'BH', 'A'
+
+
 filelist.sort(key=keyfunc)
 
 for i, file in enumerate(filelist):

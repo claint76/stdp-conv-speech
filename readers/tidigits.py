@@ -5,7 +5,6 @@ import numpy as np
 import scipy.io.wavfile as wav
 from sklearn.preprocessing import normalize
 import os
-import pickle
 
 
 def read_data(path, n_bands, n_frames):
@@ -27,7 +26,7 @@ def read_data(path, n_bands, n_frames):
 
     def keyfunc(x):
         s = x.split('/')
-        return (s[-1][0], s[-2], s[-1][1]) # BH/1A_endpt.wav: sort by '1', 'BH', 'A'
+        return (s[-1][0], s[-2], s[-1][1])  # BH/1A_endpt.wav: sort by '1', 'BH', 'A'
     filelist.sort(key=keyfunc)
 
     feats = np.empty((n_samples, n_bands * n_frames))
@@ -47,7 +46,7 @@ def read_data(path, n_bands, n_frames):
         feat, energy = fbank(sig, rate, winlen, winstep, nfilt=n_bands, nfft=4096, winfunc=np.hamming)
         feat = np.log(feat)
 
-        feats[i] = feat[:n_frames].flatten() # feat may have 41 or 42 frames
+        feats[i] = feat[:n_frames].flatten()  # feat may have 41 or 42 frames
 
     feats = normalize(feats, norm='l2', axis=1)
 

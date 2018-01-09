@@ -3,8 +3,8 @@
 from sklearn import svm
 from readers.tidigits import read_data
 
-n_bands=40
-n_frames=41
+n_bands = 40
+n_frames = 41
 
 train_set, test_set = read_data(path='data/tidigits', n_bands=n_bands, n_frames=n_frames)
 

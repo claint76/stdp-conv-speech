@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import numpy as np
 import matplotlib.pyplot as plt
 import json
 import pickle
@@ -19,7 +18,7 @@ w = w.reshape((params['layers'][1]['sec_num'], params['layers'][1]['map_num'], p
 
 plt.figure(figsize=(7.5, 3.5))
 for j in range(params['layers'][1]['map_num']):
-    plt.subplot(rows, cols, j+1)
+    plt.subplot(rows, cols, j + 1)
     plt.axis('off')
     plt.imshow(w[5][j].transpose(), interpolation="nearest", vmin=0, vmax=1)
 

@@ -4,15 +4,9 @@ import argparse
 import json
 import numpy as np
 import pickle
-import sys
 import time
-from datetime import timedelta
 from sklearn import svm
 from sklearn.metrics import confusion_matrix
-
-import pycuda.driver as cuda
-import pycuda.autoinit
-from pycuda.compiler import SourceModule
 
 from network import Network
 from readers.tidigits import read_data
@@ -111,7 +105,7 @@ if to_train:
     for i, layer in enumerate(network.layers):
         network.active_layers.append(layer)
         if hasattr(layer, 'plastic'):
-            if i < train_from_layer: # train from layer x
+            if i < train_from_layer:  # train from layer x
                 with open(weights_path.format(i), 'rb') as f:
                     layer.weights.set(pickle.load(f))
                     continue
@@ -120,7 +114,7 @@ if to_train:
             layer.plastic.fill(True)
             for r in range(layer.learning_rounds):
                 run(train_set, learning_round=r)
-                with open(weights_path.format(str(i)+'_'+str(r)), 'wb') as f:
+                with open(weights_path.format(str(i) + '_' + str(r)), 'wb') as f:
                     pickle.dump(layer.weights.get(), f)
 
             layer.plastic.fill(False)
@@ -164,7 +158,6 @@ if to_test:
 
     seconds = time.time() - start_time
     print('Testing time: {:02.0f}:{:02.0f}'.format(seconds // 3600, seconds // 60 % 60))
-
 
     if params['layers'][-1]['type'] == 'globalpool':
         print('Running SVM on V of global pooling layer...')

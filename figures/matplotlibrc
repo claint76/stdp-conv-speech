@@ -1,4 +1,4 @@
-backend : Qt5Agg
+backend : TkAgg
 font.family : arial
 font.size : 8
 savefig.dpi : 300

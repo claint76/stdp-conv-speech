@@ -9,7 +9,7 @@ from sklearn import svm
 from sklearn.metrics import confusion_matrix
 
 from network import Network
-from readers.tidigits import read_data
+from readers.timit import read_data
 
 
 parser = argparse.ArgumentParser()
@@ -44,7 +44,7 @@ with open(args.params_file) as f:
 
 
 print('Reading data...')
-train_set, test_set = read_data(path='data/tidigits', n_bands=params['layers'][0]['width'], n_frames=params['layers'][0]['height'])
+train_set, test_set = read_data(path='data/timit', n_bands=params['layers'][0]['width'], n_frames=params['layers'][0]['height'])
 
 
 print('Creating network...')

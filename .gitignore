@@ -5,8 +5,6 @@ __pycache__
 *.png
 *.txt
 
-data/**/*.gz
-data/**/*ubyte*
-data/**/*.jpg
-data/**/*.waV
-data/**/*.zip
+data/*/*
+!data/*/*.py
+!data/*/*.sh

@@ -4,6 +4,7 @@ from Tempotron import Tempotron
 import numpy as np
 import pickle
 import matplotlib.pyplot as plt
+import argparse
 
 
 with open('output_train_set.pickle.v2', 'rb') as f:
@@ -13,13 +14,22 @@ with open('output_test_set.pickle.v2', 'rb') as f:
 
 n_input = 450
 n_output = 10
-threshold = 15
+
+# parser = argparse.ArgumentParser()
+# parser.add_argument('learning_rate', type=float)
+# parser.add_argument('round_num', type=int)
+# args = parser.parse_args()
+
+# learning_rate = args.learning_rate
+# round_num = args.round_num
+learning_rate = 0.02
+round_num = 5
 
 tempotrons = []
 for i in range(n_output):
     np.random.seed(i)
     efficacies = 0.5 + 0.1 * np.random.random(n_input)
-    tempotrons.append(Tempotron(efficacies, threshold))
+    tempotrons.append(Tempotron(efficacies, threshold=15))
 
 for i in range(n_output):
     train_data = []
@@ -30,7 +40,7 @@ for i in range(n_output):
         spike_times = [time if time[0] != 500.0 else [] for time in spike_times]
         train_data.append((spike_times, i == train_set[1][j]))
 
-    tempotrons[i].train(train_data, 50, learning_rate=0.08)
+    tempotrons[i].train(train_data, round_num, learning_rate=learning_rate)
 
 
 correct_count = 0
@@ -46,8 +56,8 @@ for j in range(len(test_set[1])):
         correct_count += 1
 print('test_set accuracy = {}'.format(correct_count / len(test_set[1])))
 
-fig, axes = plt.subplots(1, 1)
-axes.bar(range(450), tempotrons[0].efficacies)
+# fig, axes = plt.subplots(1, 1)
+# axes.bar(range(450), tempotrons[0].efficacies)
 # axes[1].bar(range(450), tempotrons[1].efficacies)
 # axes[2].bar(range(450), tempotrons[2].efficacies)
-plt.show()
+# plt.show()

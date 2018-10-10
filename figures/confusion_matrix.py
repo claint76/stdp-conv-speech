@@ -2,17 +2,26 @@ import numpy as np
 import pickle
 import matplotlib.pyplot as plt
 
+dataset = 'timit'
+# dataset = 'tidigits'
+
+if dataset == 'timit':
+    import sys
+    sys.path.append('..')
+    from readers.timit import wordlist
+    classes = wordlist
+else:
+    classes = list(range(10))
 
 with open('../output/confusion_matrix.pickle', 'rb') as f:
     cm = pickle.load(f)
 cm = cm / cm.sum(axis=1)[:, np.newaxis]  # normalize
-classes = list(range(10))
 
 plt.figure(figsize=(5.2, 3.2))
 plt.imshow(cm, interpolation='nearest', cmap=plt.cm.coolwarm)
 plt.colorbar()
 tick_marks = np.arange(len(classes))
-plt.xticks(tick_marks, classes)
+plt.xticks(tick_marks, classes, rotation=-60)
 plt.yticks(tick_marks, classes)
 plt.ylabel('True class')
 plt.xlabel('Predicted class')

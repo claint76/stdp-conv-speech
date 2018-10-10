@@ -7,6 +7,10 @@ from sklearn.preprocessing import normalize
 import os
 
 
+# wordlist = ['that', 'she', 'an', 'all', 'your', 'me', 'had', 'like', 'don\'t', 'and', 'year', 'water', 'dark', 'of', 'rag', 'oily', 'wash', 'ask', 'carry', 'suit']
+# wordlist = ['that', 'she', 'an', 'all', 'your', 'me', 'had', 'like', 'don\'t', 'and']
+wordlist = ['that', 'she', 'all', 'your', 'me', 'had', 'like', 'don\'t', 'year', 'water', 'dark', 'rag', 'oily', 'wash', 'ask', 'carry', 'suit']
+
 def read_data(path, n_bands, n_frames):
     overlap = 0.5
 
@@ -16,10 +20,6 @@ def read_data(path, n_bands, n_frames):
     #     with open(tidigits_file, 'rb') as f:
     #         train_set, test_set = pickle.load(f)
     #     return train_set, test_set
-
-    # wordlist = ['that', 'she', 'an', 'all', 'your', 'me', 'had', 'like', 'don\'t', 'and', 'year', 'water', 'dark', 'of', 'rag', 'oily', 'wash', 'ask', 'carry', 'suit']
-    # wordlist = ['that', 'she', 'an', 'all', 'your', 'me', 'had', 'like', 'don\'t', 'and']
-    wordlist = ['that', 'she', 'all', 'your', 'me', 'had', 'like', 'don\'t', 'year', 'water', 'dark', 'rag', 'oily', 'wash', 'ask', 'carry', 'suit']
 
     labels = []
     feats = []
